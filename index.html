@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>진심을 전하는 작은 순간</title>
+  <style>
+    :root {
+      --ink: #2f2640;
+      --soft-ink: #675a7c;
+      --pink: #ff6fa9;
+      --rose: #ef3f6b;
+      --lilac: #c58bff;
+      --ditto: #b888f4;
+      --ditto-deep: #9c68dc;
+      --cream: #fff8fb;
+      --mint: #bdebdc;
+      --yellow: #ffe081;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      overflow: hidden;
+      color: var(--ink);
+      font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(255, 224, 129, 0.45), transparent 24rem),
+        radial-gradient(circle at 82% 18%, rgba(189, 235, 220, 0.58), transparent 22rem),
+        linear-gradient(135deg, #fff6fb 0%, #f6f2ff 45%, #fffdf5 100%);
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .stage {
+      position: relative;
+      isolation: isolate;
+      width: 100vw;
+      height: 100svh;
+      min-height: 560px;
+      overflow: hidden;
+    }
+
+    .top-copy {
+      position: absolute;
+      z-index: 5;
+      top: clamp(22px, 4vh, 46px);
+      left: 50%;
+      width: min(92vw, 720px);
+      transform: translateX(-50%);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .top-copy h1 {
+      margin: 0;
+      font-size: clamp(25px, 5vw, 54px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .top-copy p {
+      margin: 12px auto 0;
+      max-width: 520px;
+      color: var(--soft-ink);
+      font-size: clamp(14px, 2.2vw, 18px);
+      line-height: 1.55;
+    }
+
+    .progress {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 18px;
+      padding: 8px 12px;
+      border: 1px solid rgba(184, 136, 244, 0.26);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.62);
+      color: #73509f;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 12px 32px rgba(88, 57, 119, 0.08);
+      backdrop-filter: blur(14px);
+    }
+
+    .progress-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--pink);
+      box-shadow: 0 0 0 5px rgba(255, 111, 169, 0.14);
+    }
+
+    .ditto-field {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
+
+    .ditto {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      width: clamp(70px, var(--size), 138px);
+      aspect-ratio: 1.18;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      cursor: pointer;
+      transform: translate(-50%, -50%) rotate(var(--rot));
+      animation: bob var(--speed) ease-in-out infinite;
+      filter: drop-shadow(0 18px 22px rgba(91, 54, 124, 0.18));
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .ditto:focus-visible {
+      outline: 4px solid rgba(239, 63, 107, 0.42);
+      outline-offset: 8px;
+      border-radius: 44%;
+    }
+
+    .ditto-body {
+      position: absolute;
+      inset: 7% 4% 4%;
+      border: 2px solid rgba(82, 52, 109, 0.12);
+      border-radius: 46% 43% 44% 48% / 48% 50% 42% 45%;
+      background:
+        radial-gradient(circle at 28% 30%, rgba(255, 255, 255, 0.48), transparent 15%),
+        linear-gradient(150deg, #c897ff 0%, var(--ditto) 58%, var(--ditto-deep) 100%);
+      transition: transform 190ms ease, filter 190ms ease;
+    }
+
+    .ditto:hover .ditto-body {
+      transform: scale(1.06);
+      filter: saturate(1.12);
+    }
+
+    .ditto-eye,
+    .ditto-eye::after {
+      position: absolute;
+      top: 38%;
+      width: 9%;
+      height: 4%;
+      border-radius: 99px;
+      background: #332642;
+      content: "";
+    }
+
+    .ditto-eye {
+      left: 30%;
+    }
+
+    .ditto-eye::after {
+      top: 0;
+      left: 410%;
+      width: 100%;
+      height: 100%;
+    }
+
+    .ditto-mouth {
+      position: absolute;
+      left: 48%;
+      top: 54%;
+      transform: translateX(-50%);
+    }
+
+    .smile .ditto-mouth {
+      width: 26%;
+      height: 12%;
+      border-bottom: 4px solid #332642;
+      border-radius: 0 0 999px 999px;
+    }
+
+    .heart-eyes .ditto-eye,
+    .heart-eyes .ditto-eye::after {
+      width: 12%;
+      height: 11%;
+      transform: rotate(45deg);
+      border-radius: 2px 2px 0 2px;
+      background: var(--rose);
+    }
+
+    .heart-eyes .ditto-eye::before,
+    .heart-eyes .ditto-eye::after {
+      content: "";
+      box-shadow:
+        -4px 0 0 0 var(--rose),
+        0 -4px 0 0 var(--rose);
+    }
+
+    .heart-eyes .ditto-mouth {
+      width: 28%;
+      height: 14%;
+      border-bottom: 4px solid #332642;
+      border-radius: 0 0 999px 999px;
+    }
+
+    .wink .ditto-eye {
+      height: 5%;
+      transform: rotate(-8deg);
+    }
+
+    .wink .ditto-eye::after {
+      height: 11px;
+      border-radius: 50%;
+      transform: translateY(-4px);
+    }
+
+    .wink .ditto-mouth {
+      width: 18%;
+      height: 15%;
+      border: 4px solid #332642;
+      border-top: 0;
+      border-left: 0;
+      border-radius: 0 0 999px 0;
+      transform: translateX(-50%) rotate(12deg);
+    }
+
+    .shy .ditto-mouth {
+      width: 16%;
+      height: 8%;
+      border-bottom: 4px solid #332642;
+      border-radius: 0 0 999px 999px;
+    }
+
+    .shy .ditto-body::before,
+    .shy .ditto-body::after {
+      position: absolute;
+      top: 48%;
+      width: 13%;
+      height: 6%;
+      border-radius: 50%;
+      background: rgba(255, 111, 169, 0.42);
+      content: "";
+    }
+
+    .shy .ditto-body::before {
+      left: 17%;
+    }
+
+    .shy .ditto-body::after {
+      right: 20%;
+    }
+
+    .surprise .ditto-mouth {
+      width: 13%;
+      height: 13%;
+      border-radius: 50%;
+      background: #332642;
+    }
+
+    .sparkle {
+      position: absolute;
+      z-index: 1;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: rgba(255, 111, 169, 0.7);
+      animation: drift 7s ease-in-out infinite;
+      opacity: 0.5;
+    }
+
+    .question-panel {
+      position: absolute;
+      z-index: 10;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.98);
+      transition: opacity 520ms ease, transform 520ms ease;
+    }
+
+    .question-panel.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+
+    .question-inner {
+      width: min(92vw, 670px);
+      text-align: center;
+    }
+
+    .question-inner h2 {
+      margin: 0 auto;
+      font-size: clamp(31px, 6.5vw, 70px);
+      line-height: 1.12;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .question-inner p {
+      margin: 18px auto 0;
+      max-width: 520px;
+      color: var(--soft-ink);
+      font-size: clamp(15px, 2.5vw, 20px);
+      line-height: 1.6;
+    }
+
+    .choices {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      min-height: 96px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .choice {
+      position: relative;
+      min-width: 132px;
+      min-height: 58px;
+      border: 0;
+      border-radius: 16px;
+      color: white;
+      font-size: 20px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 18px 34px rgba(239, 63, 107, 0.2);
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .choice:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 24px 42px rgba(239, 63, 107, 0.26);
+    }
+
+    .yes {
+      background: linear-gradient(135deg, #ff548b, #ef3f6b);
+    }
+
+    .no {
+      background: linear-gradient(135deg, #8f7ab8, #6d5a8d);
+    }
+
+    .no.is-crawling {
+      pointer-events: none;
+      min-width: 88px;
+      min-height: 72px;
+      color: transparent;
+      background: transparent;
+      box-shadow: none;
+      animation: crawl-away 1700ms ease-in forwards;
+    }
+
+    .no.is-crawling::before {
+      position: absolute;
+      inset: 0;
+      border-radius: 46% 43% 44% 48% / 48% 50% 42% 45%;
+      background: linear-gradient(150deg, #c897ff, #9c68dc);
+      content: "";
+      box-shadow: 0 18px 22px rgba(91, 54, 124, 0.18);
+    }
+
+    .no.is-crawling::after {
+      position: absolute;
+      left: 50%;
+      top: 42%;
+      width: 38px;
+      height: 20px;
+      transform: translateX(-50%);
+      color: #332642;
+      font-size: 28px;
+      line-height: 1;
+      content: "..";
+    }
+
+    .celebration {
+      position: absolute;
+      z-index: 8;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .petal {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      width: var(--s);
+      height: var(--s);
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.2) rotate(var(--r));
+      animation: bloom 1200ms cubic-bezier(0.18, 0.92, 0.25, 1.12) forwards;
+      animation-delay: var(--d);
+    }
+
+    .petal.heart::before,
+    .petal.heart::after {
+      position: absolute;
+      width: 52%;
+      height: 82%;
+      border-radius: 999px 999px 0 0;
+      background: linear-gradient(180deg, #ff6f9f, #ef3f6b);
+      content: "";
+    }
+
+    .petal.heart::before {
+      left: 50%;
+      transform: rotate(-45deg);
+      transform-origin: 0 100%;
+    }
+
+    .petal.heart::after {
+      left: 0;
+      transform: rotate(45deg);
+      transform-origin: 100% 100%;
+    }
+
+    .petal.rose {
+      border-radius: 68% 32% 61% 39% / 52% 45% 55% 48%;
+      background:
+        radial-gradient(circle at 35% 38%, #ffd0df 0 13%, transparent 14%),
+        linear-gradient(135deg, #ff86ae, #d92555);
+      box-shadow: inset -6px -7px 0 rgba(168, 15, 58, 0.15);
+    }
+
+    .answer-note {
+      margin-top: 16px;
+      min-height: 28px;
+      color: var(--rose);
+      font-size: clamp(16px, 3vw, 22px);
+      font-weight: 900;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 260ms ease, transform 260ms ease;
+    }
+
+    .answer-note.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .is-popped {
+      pointer-events: none;
+      animation: pop-out 360ms ease forwards;
+    }
+
+    .stage.final .top-copy {
+      opacity: 0;
+      transition: opacity 300ms ease;
+    }
+
+    @keyframes bob {
+      0%,
+      100% {
+        translate: 0 0;
+      }
+      50% {
+        translate: 0 -18px;
+      }
+    }
+
+    @keyframes drift {
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+      50% {
+        transform: translate(16px, -28px) scale(1.25);
+      }
+    }
+
+    @keyframes pop-out {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(var(--rot)) scale(1);
+      }
+      70% {
+        opacity: 0.82;
+        transform: translate(-50%, -50%) rotate(calc(var(--rot) + 16deg)) scale(1.28);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(calc(var(--rot) - 18deg)) scale(0.12);
+      }
+    }
+
+    @keyframes crawl-away {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(0deg) scale(1);
+      }
+      55% {
+        opacity: 1;
+        transform: translate(70px, 26px) rotate(10deg) scale(0.96);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(38vw, 30vh) rotate(24deg) scale(0.72);
+      }
+    }
+
+    @keyframes bloom {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.15) rotate(var(--r));
+      }
+      55% {
+        opacity: 1;
+        transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.1) rotate(calc(var(--r) + 22deg));
+      }
+      100% {
+        opacity: 1;
+        transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1) rotate(calc(var(--r) + 10deg));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .stage {
+        min-height: 620px;
+      }
+
+      .top-copy {
+        top: 20px;
+      }
+
+      .choice {
+        min-width: 118px;
+        min-height: 54px;
+        border-radius: 14px;
+        font-size: 18px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 1ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage" id="stage">
+    <section class="top-copy" aria-live="polite">
+      <h1>오늘은 숨겨둔 마음을<br />하나씩 꺼내는 날</h1>
+      <p>통통 튀는 친구들을 눌러서 모두 보내주세요.</p>
+      <div class="progress">
+        <span class="progress-dot"></span>
+        <span id="counter">0 / 12</span>
+      </div>
+    </section>
+
+    <div class="ditto-field" id="dittoField" aria-label="메타몽 친구들"></div>
+    <div class="celebration" id="celebration" aria-hidden="true"></div>
+
+    <section class="question-panel" id="questionPanel" aria-hidden="true">
+      <div class="question-inner">
+        <h2>저랑 진지하게 만나볼래요?</h2>
+        <p>대답은 하나만 남아도 괜찮아요.</p>
+        <div class="choices">
+          <button class="choice yes" id="yesButton" type="button">네</button>
+          <button class="choice no" id="noButton" type="button">아니요</button>
+        </div>
+        <div class="answer-note" id="answerNote">이제 장미랑 하트만 남겨둘게요.</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const dittos = [
+      { x: "18%", y: "35%", size: "11vw", rot: "-8deg", face: "smile", speed: "4.6s" },
+      { x: "34%", y: "28%", size: "9vw", rot: "7deg", face: "wink", speed: "5.3s" },
+      { x: "52%", y: "35%", size: "12vw", rot: "-2deg", face: "heart-eyes", speed: "4.9s" },
+      { x: "72%", y: "29%", size: "10vw", rot: "10deg", face: "shy", speed: "5.5s" },
+      { x: "85%", y: "48%", size: "8.5vw", rot: "-12deg", face: "surprise", speed: "4.4s" },
+      { x: "14%", y: "61%", size: "8.8vw", rot: "6deg", face: "shy", speed: "5.1s" },
+      { x: "30%", y: "68%", size: "12vw", rot: "-13deg", face: "surprise", speed: "4.8s" },
+      { x: "48%", y: "61%", size: "9.4vw", rot: "11deg", face: "smile", speed: "5.7s" },
+      { x: "64%", y: "73%", size: "11vw", rot: "-5deg", face: "wink", speed: "4.5s" },
+      { x: "81%", y: "67%", size: "12.5vw", rot: "8deg", face: "heart-eyes", speed: "5.2s" },
+      { x: "42%", y: "84%", size: "8.8vw", rot: "-6deg", face: "shy", speed: "5.9s" },
+      { x: "60%", y: "50%", size: "8vw", rot: "15deg", face: "smile", speed: "4.2s" }
+    ];
+
+    const field = document.getElementById("dittoField");
+    const counter = document.getElementById("counter");
+    const panel = document.getElementById("questionPanel");
+    const stage = document.getElementById("stage");
+    const noButton = document.getElementById("noButton");
+    const yesButton = document.getElementById("yesButton");
+    const celebration = document.getElementById("celebration");
+    const answerNote = document.getElementById("answerNote");
+    let removed = 0;
+    let audioContext;
+
+    function getAudioContext() {
+      audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
+      return audioContext;
+    }
+
+    function playDittoSound() {
+      const ctx = getAudioContext();
+      const now = ctx.currentTime;
+      const notes = [520, 660, 590];
+
+      notes.forEach((frequency, index) => {
+        const oscillator = ctx.createOscillator();
+        const gain = ctx.createGain();
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(frequency, now + index * 0.07);
+        oscillator.frequency.exponentialRampToValueAtTime(frequency * 1.2, now + index * 0.07 + 0.08);
+        gain.gain.setValueAtTime(0.0001, now + index * 0.07);
+        gain.gain.exponentialRampToValueAtTime(0.12, now + index * 0.07 + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.07 + 0.13);
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+        oscillator.start(now + index * 0.07);
+        oscillator.stop(now + index * 0.07 + 0.15);
+      });
+    }
+
+    function playYesSound() {
+      const ctx = getAudioContext();
+      const now = ctx.currentTime;
+      [392, 523.25, 659.25, 783.99].forEach((frequency, index) => {
+        const oscillator = ctx.createOscillator();
+        const gain = ctx.createGain();
+        oscillator.type = "triangle";
+        oscillator.frequency.value = frequency;
+        gain.gain.setValueAtTime(0.0001, now + index * 0.09);
+        gain.gain.exponentialRampToValueAtTime(0.11, now + index * 0.09 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.09 + 0.22);
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+        oscillator.start(now + index * 0.09);
+        oscillator.stop(now + index * 0.09 + 0.24);
+      });
+    }
+
+    function createDitto(item, index) {
+      const button = document.createElement("button");
+      button.className = `ditto ${item.face}`;
+      button.type = "button";
+      button.setAttribute("aria-label", `표정 ${index + 1} 메타몽 보내기`);
+      button.style.setProperty("--x", item.x);
+      button.style.setProperty("--y", item.y);
+      button.style.setProperty("--size", item.size);
+      button.style.setProperty("--rot", item.rot);
+      button.style.setProperty("--speed", item.speed);
+      button.innerHTML = `
+        <span class="ditto-body">
+          <span class="ditto-eye"></span>
+          <span class="ditto-mouth"></span>
+        </span>
+      `;
+      button.addEventListener("click", () => removeDitto(button));
+      return button;
+    }
+
+    function removeDitto(button) {
+      if (button.classList.contains("is-popped")) return;
+      playDittoSound();
+      button.classList.add("is-popped");
+      removed += 1;
+      counter.textContent = `${removed} / ${dittos.length}`;
+
+      setTimeout(() => button.remove(), 380);
+
+      if (removed === dittos.length) {
+        setTimeout(showQuestion, 520);
+      }
+    }
+
+    function showQuestion() {
+      stage.classList.add("final");
+      panel.classList.add("is-visible");
+      panel.setAttribute("aria-hidden", "false");
+      yesButton.focus();
+    }
+
+    function scatterSparkles() {
+      for (let i = 0; i < 22; i += 1) {
+        const dot = document.createElement("span");
+        dot.className = "sparkle";
+        dot.style.left = `${Math.random() * 100}%`;
+        dot.style.top = `${Math.random() * 100}%`;
+        dot.style.animationDelay = `${Math.random() * 4}s`;
+        dot.style.background = i % 3 === 0 ? "rgba(189, 235, 220, 0.8)" : i % 3 === 1 ? "rgba(255, 224, 129, 0.75)" : "rgba(255, 111, 169, 0.72)";
+        stage.appendChild(dot);
+      }
+    }
+
+    function celebrate() {
+      playYesSound();
+      answerNote.classList.add("is-visible");
+      yesButton.textContent = "좋아요";
+      yesButton.disabled = true;
+      noButton.remove();
+      celebration.innerHTML = "";
+
+      dittos.forEach((item, index) => {
+        const petal = document.createElement("span");
+        petal.className = `petal ${index % 2 === 0 ? "heart" : "rose"}`;
+        petal.style.setProperty("--x", item.x);
+        petal.style.setProperty("--y", item.y);
+        petal.style.setProperty("--s", `${42 + (index % 5) * 9}px`);
+        petal.style.setProperty("--r", `${index * 28 - 70}deg`);
+        petal.style.setProperty("--d", `${index * 0.055}s`);
+        petal.style.setProperty("--tx", `${Math.cos(index) * 24}px`);
+        petal.style.setProperty("--ty", `${Math.sin(index * 1.4) * 24}px`);
+        celebration.appendChild(petal);
+      });
+    }
+
+    noButton.addEventListener("click", () => {
+      playDittoSound();
+      noButton.classList.add("is-crawling");
+      setTimeout(() => noButton.remove(), 1700);
+    });
+
+    yesButton.addEventListener("click", celebrate);
+
+    dittos.map(createDitto).forEach((ditto) => field.appendChild(ditto));
+    scatterSparkles();
+  </script>
+</body>
+</html>
