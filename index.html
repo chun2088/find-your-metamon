@@ -676,25 +676,33 @@
 
   <script>
     const stickerCount = 151;
-    const columns = 11;
-    const rows = Math.ceil(stickerCount / columns);
+    function randomUnit(seed) {
+      const value = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+      return value - Math.floor(value);
+    }
+
     const dittos = Array.from({ length: stickerCount }, (_, index) => {
       const number = String(index + 1).padStart(3, "0");
-      const col = index % columns;
-      const row = Math.floor(index / columns);
-      const wave = Math.sin(index * 1.73);
-      const stagger = Math.cos(index * 0.91);
-      const x = -6 + ((col + 0.5) / columns) * 112 + wave * 5.2;
-      const y = -3 + ((row + 0.5) / rows) * 106 + stagger * 4.6;
+      const edgeBias = index % 5 === 0;
+      const xRaw = edgeBias
+        ? (randomUnit(index + 11) < 0.5 ? 4 + randomUnit(index + 13) * 14 : 82 + randomUnit(index + 17) * 14)
+        : 8 + randomUnit(index + 23) * 84;
+      const yRaw = index % 7 === 0
+        ? (randomUnit(index + 31) < 0.5 ? 6 + randomUnit(index + 37) * 14 : 80 + randomUnit(index + 41) * 16)
+        : 7 + randomUnit(index + 43) * 88;
+      const x = xRaw + Math.sin(index * 2.41) * 4.8;
+      const y = yRaw + Math.cos(index * 1.67) * 4.4;
+      const bigSticker = index % 9 === 0 || index % 13 === 0;
 
       return {
-        x: `${Math.max(-8, Math.min(108, x)).toFixed(2)}%`,
-        y: `${Math.max(-6, Math.min(106, y)).toFixed(2)}%`,
-        size: `${8.6 + (index % 7) * 0.72}vw`,
-        rot: `${((index * 37) % 45) - 22}deg`,
+        x: `${Math.max(4, Math.min(96, x)).toFixed(2)}%`,
+        y: `${Math.max(6, Math.min(96, y)).toFixed(2)}%`,
+        size: `${bigSticker ? 12.8 + randomUnit(index + 59) * 3.2 : 8.4 + randomUnit(index + 61) * 4.8}vw`,
+        rot: `${Math.round(randomUnit(index + 67) * 62 - 31)}deg`,
         src: `public/assets/stickers/ditto/${number}.png`,
-        speed: `${3.8 + (index % 7) * 0.28}s`,
-        delay: `${(index % 13) * -0.17}s`
+        speed: `${3.6 + randomUnit(index + 71) * 2.5}s`,
+        delay: `${randomUnit(index + 73) * -2.2}s`,
+        layer: `${20 + Math.floor(randomUnit(index + 79) * 80)}`
       };
     });
 
@@ -764,7 +772,7 @@
       button.style.setProperty("--rot", item.rot);
       button.style.setProperty("--speed", item.speed);
       button.style.setProperty("--delay", item.delay);
-      button.style.zIndex = String(20 + (index % 31));
+      button.style.zIndex = item.layer;
       button.innerHTML = `
         <img class="ditto-img" src="${item.src}" alt="" draggable="false" />
       `;
