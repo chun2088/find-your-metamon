@@ -112,7 +112,7 @@
       position: absolute;
       left: var(--x);
       top: var(--y);
-      width: clamp(88px, var(--size), 170px);
+      width: clamp(138px, var(--size), 260px);
       aspect-ratio: 1;
       border: 0;
       padding: 0;
@@ -607,7 +607,7 @@
       }
 
       .ditto {
-        width: clamp(62px, var(--size), 112px);
+        width: clamp(108px, var(--size), 188px);
       }
     }
 
@@ -650,33 +650,29 @@
 
   <script>
     const stickerCount = 31;
-    function randomUnit(seed) {
-      const value = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
-      return value - Math.floor(value);
-    }
+    const collageSlots = [
+      [6, 7, 38, -18, 78], [25, 6, 34, 14, 64], [47, 8, 39, -8, 91], [70, 7, 35, 22, 55], [93, 9, 40, -16, 82],
+      [13, 22, 42, 24, 66], [36, 20, 37, -22, 96], [61, 23, 43, 10, 70], [85, 22, 39, -26, 88],
+      [3, 39, 45, 12, 58], [24, 38, 40, -12, 84], [49, 39, 46, 28, 99], [75, 38, 41, -9, 62], [97, 40, 44, 18, 90],
+      [15, 55, 44, -28, 93], [39, 56, 48, 9, 60], [64, 55, 43, -18, 100], [88, 57, 47, 24, 74],
+      [5, 72, 43, 20, 69], [28, 73, 49, -8, 95], [52, 72, 45, 17, 57], [77, 74, 50, -25, 87], [96, 73, 42, 10, 98],
+      [13, 90, 47, -14, 81], [35, 91, 42, 26, 59], [58, 90, 48, -21, 92], [82, 91, 45, 15, 67],
+      [22, 49, 52, 33, 101], [69, 48, 51, -34, 103], [43, 28, 50, 19, 105], [56, 84, 53, -11, 107]
+    ];
 
     const dittos = Array.from({ length: stickerCount }, (_, index) => {
       const number = String(index + 1).padStart(3, "0");
-      const edgeBias = index % 5 === 0;
-      const xRaw = edgeBias
-        ? (randomUnit(index + 11) < 0.5 ? 4 + randomUnit(index + 13) * 14 : 82 + randomUnit(index + 17) * 14)
-        : 8 + randomUnit(index + 23) * 84;
-      const yRaw = index % 7 === 0
-        ? (randomUnit(index + 31) < 0.5 ? 6 + randomUnit(index + 37) * 14 : 80 + randomUnit(index + 41) * 16)
-        : 7 + randomUnit(index + 43) * 88;
-      const x = xRaw + Math.sin(index * 2.41) * 4.8;
-      const y = yRaw + Math.cos(index * 1.67) * 4.4;
-      const bigSticker = index % 9 === 0 || index % 13 === 0;
+      const [x, y, size, rot, layer] = collageSlots[index];
 
       return {
-        x: `${Math.max(4, Math.min(96, x)).toFixed(2)}%`,
-        y: `${Math.max(6, Math.min(96, y)).toFixed(2)}%`,
-        size: `${bigSticker ? 12.8 + randomUnit(index + 59) * 3.2 : 8.4 + randomUnit(index + 61) * 4.8}vw`,
-        rot: `${Math.round(randomUnit(index + 67) * 62 - 31)}deg`,
+        x: `${x}%`,
+        y: `${y}%`,
+        size: `${size}vw`,
+        rot: `${rot}deg`,
         src: `public/assets/stickers/ditto/${number}.png`,
-        speed: `${3.6 + randomUnit(index + 71) * 2.5}s`,
-        delay: `${randomUnit(index + 73) * -2.2}s`,
-        layer: `${20 + Math.floor(randomUnit(index + 79) * 80)}`
+        speed: `${3.7 + (index % 5) * 0.45}s`,
+        delay: `${(index % 11) * -0.21}s`,
+        layer: `${layer}`
       };
     });
 
