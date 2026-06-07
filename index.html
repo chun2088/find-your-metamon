@@ -113,7 +113,7 @@
       left: var(--x);
       top: var(--y);
       width: clamp(70px, var(--size), 138px);
-      aspect-ratio: 1.18;
+      aspect-ratio: 1;
       border: 0;
       padding: 0;
       background: transparent;
@@ -124,10 +124,26 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    .ditto-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 190ms ease, filter 190ms ease;
+      user-select: none;
+      pointer-events: none;
+    }
+
     .ditto:focus-visible {
       outline: 4px solid rgba(239, 63, 107, 0.42);
       outline-offset: 8px;
       border-radius: 44%;
+    }
+
+    .ditto:hover .ditto-img {
+      transform: scale(1.08);
+      filter: saturate(1.12);
     }
 
     .ditto-body {
@@ -363,7 +379,7 @@
       position: absolute;
       inset: 0;
       border-radius: 46% 43% 44% 48% / 48% 50% 42% 45%;
-      background: linear-gradient(150deg, #c897ff, #9c68dc);
+      background: var(--crawl-sticker) center / contain no-repeat;
       content: "";
       box-shadow: 0 18px 22px rgba(91, 54, 124, 0.18);
     }
@@ -578,18 +594,18 @@
 
   <script>
     const dittos = [
-      { x: "18%", y: "35%", size: "11vw", rot: "-8deg", face: "smile", speed: "4.6s" },
-      { x: "34%", y: "28%", size: "9vw", rot: "7deg", face: "wink", speed: "5.3s" },
-      { x: "52%", y: "35%", size: "12vw", rot: "-2deg", face: "heart-eyes", speed: "4.9s" },
-      { x: "72%", y: "29%", size: "10vw", rot: "10deg", face: "shy", speed: "5.5s" },
-      { x: "85%", y: "48%", size: "8.5vw", rot: "-12deg", face: "surprise", speed: "4.4s" },
-      { x: "14%", y: "61%", size: "8.8vw", rot: "6deg", face: "shy", speed: "5.1s" },
-      { x: "30%", y: "68%", size: "12vw", rot: "-13deg", face: "surprise", speed: "4.8s" },
-      { x: "48%", y: "61%", size: "9.4vw", rot: "11deg", face: "smile", speed: "5.7s" },
-      { x: "64%", y: "73%", size: "11vw", rot: "-5deg", face: "wink", speed: "4.5s" },
-      { x: "81%", y: "67%", size: "12.5vw", rot: "8deg", face: "heart-eyes", speed: "5.2s" },
-      { x: "42%", y: "84%", size: "8.8vw", rot: "-6deg", face: "shy", speed: "5.9s" },
-      { x: "60%", y: "50%", size: "8vw", rot: "15deg", face: "smile", speed: "4.2s" }
+      { x: "18%", y: "35%", size: "11vw", rot: "-8deg", src: "public/assets/stickers/ditto/001.png", speed: "4.6s" },
+      { x: "34%", y: "28%", size: "9vw", rot: "7deg", src: "public/assets/stickers/ditto/002.png", speed: "5.3s" },
+      { x: "52%", y: "35%", size: "12vw", rot: "-2deg", src: "public/assets/stickers/ditto/003.png", speed: "4.9s" },
+      { x: "72%", y: "29%", size: "10vw", rot: "10deg", src: "public/assets/stickers/ditto/004.png", speed: "5.5s" },
+      { x: "85%", y: "48%", size: "8.5vw", rot: "-12deg", src: "public/assets/stickers/ditto/005.png", speed: "4.4s" },
+      { x: "14%", y: "61%", size: "8.8vw", rot: "6deg", src: "public/assets/stickers/ditto/006.png", speed: "5.1s" },
+      { x: "30%", y: "68%", size: "12vw", rot: "-13deg", src: "public/assets/stickers/ditto/007.png", speed: "4.8s" },
+      { x: "48%", y: "61%", size: "9.4vw", rot: "11deg", src: "public/assets/stickers/ditto/008.png", speed: "5.7s" },
+      { x: "64%", y: "73%", size: "11vw", rot: "-5deg", src: "public/assets/stickers/ditto/009.png", speed: "4.5s" },
+      { x: "81%", y: "67%", size: "12.5vw", rot: "8deg", src: "public/assets/stickers/ditto/010.png", speed: "5.2s" },
+      { x: "42%", y: "84%", size: "8.8vw", rot: "-6deg", src: "public/assets/stickers/ditto/011.png", speed: "5.9s" },
+      { x: "60%", y: "50%", size: "8vw", rot: "15deg", src: "public/assets/stickers/ditto/012.png", speed: "4.2s" }
     ];
 
     const field = document.getElementById("dittoField");
@@ -649,7 +665,7 @@
 
     function createDitto(item, index) {
       const button = document.createElement("button");
-      button.className = `ditto ${item.face}`;
+      button.className = "ditto";
       button.type = "button";
       button.setAttribute("aria-label", `표정 ${index + 1} 메타몽 보내기`);
       button.style.setProperty("--x", item.x);
@@ -658,10 +674,7 @@
       button.style.setProperty("--rot", item.rot);
       button.style.setProperty("--speed", item.speed);
       button.innerHTML = `
-        <span class="ditto-body">
-          <span class="ditto-eye"></span>
-          <span class="ditto-mouth"></span>
-        </span>
+        <img class="ditto-img" src="${item.src}" alt="" draggable="false" />
       `;
       button.addEventListener("click", () => removeDitto(button));
       return button;
@@ -724,6 +737,7 @@
 
     noButton.addEventListener("click", () => {
       playDittoSound();
+      noButton.style.setProperty("--crawl-sticker", 'url("public/assets/stickers/ditto/013.png")');
       noButton.classList.add("is-crawling");
       setTimeout(() => noButton.remove(), 1700);
     });
