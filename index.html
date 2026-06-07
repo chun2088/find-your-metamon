@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>진심을 전하는 작은 순간</title>
+  <title>메타몽스티커떼기</title>
   <style>
     :root {
       --ink: #2f2640;
@@ -95,12 +95,16 @@
     }
 
     .progress-dot {
+      display: inline-block;
       width: 28px;
       height: 28px;
+      border: 0;
+      padding: 0;
       border-radius: 8px;
       background: url("public/assets/stickers/ditto/132.png") center / contain no-repeat;
       filter: drop-shadow(0 4px 4px rgba(91, 54, 124, 0.18));
       transition: opacity 240ms ease, transform 240ms ease;
+      cursor: pointer;
     }
 
     .progress-dot.is-popped {
@@ -632,7 +636,7 @@
   <main class="stage" id="stage">
     <section class="top-copy" aria-live="polite">
       <div class="progress">
-        <span class="progress-dot"></span>
+        <button class="progress-dot" id="progressSticker" type="button" aria-label="카운터 메타몽 스티커 떼기"></button>
         <span id="counter">0 / 31</span>
       </div>
     </section>
@@ -642,8 +646,7 @@
 
     <section class="question-panel" id="questionPanel" aria-hidden="true">
       <div class="question-inner">
-        <h2>저랑 진지하게 만나볼래요?</h2>
-        <p>대답은 하나만 남아도 괜찮아요.</p>
+        <h2>우리, 한번 만나볼까요?</h2>
         <div class="choices">
           <button class="choice yes" id="yesButton" type="button">네</button>
           <button class="choice no" id="noButton" type="button">아니요</button>
@@ -666,9 +669,9 @@
       [22, 49, 52, 33, 101], [69, 48, 51, -34, 103], [43, 28, 50, 19, 105], [56, 84, 53, -11, 107]
     ];
     const stickerSources = [
-      "001.png", "132-lean-left.png", "008.png", "025.png", "039.png", "132-squash.png", "047.png", "050.png", "052.png", "067.png",
-      "132-lean-right.png", "076.png", "094.png", "095.png", "105.png", "132-flat-left.png", "107.png", "129.png", "132.png", "133.png",
-      "132-tall.png", "134.png", "135.png", "136.png", "137.png", "132-wide-right.png", "139.png", "143.png", "149.png", "151.png"
+      "001.png", "008.png", "132-lean-left.png", "025.png", "039.png", "047.png", "050.png", "132-squash.png", "052.png", "067.png",
+      "076.png", "094.png", "095.png", "132-lean-right.png", "105.png", "107.png", "129.png", "132-flat-left.png", "132.png", "133.png",
+      "134.png", "135.png", "132-tall.png", "136.png", "137.png", "139.png", "143.png", "132-wide-right.png", "149.png", "151.png"
     ];
 
     const dittos = Array.from({ length: fieldStickerCount }, (_, index) => {
@@ -687,7 +690,7 @@
     });
 
     const field = document.getElementById("dittoField");
-    const progressSticker = document.querySelector(".progress-dot");
+    const progressSticker = document.getElementById("progressSticker");
     const counter = document.getElementById("counter");
     const panel = document.getElementById("questionPanel");
     const stage = document.getElementById("stage");
@@ -770,17 +773,22 @@
 
       setTimeout(() => button.remove(), 380);
 
-      if (removed === dittos.length) {
-        setTimeout(removeProgressSticker, 420);
-      }
+      maybeShowQuestion();
     }
 
     function removeProgressSticker() {
       if (!progressSticker || progressSticker.classList.contains("is-popped")) return;
+      playDittoSound();
       progressSticker.classList.add("is-popped");
-      removed = totalStickerGoal;
+      removed += 1;
       counter.textContent = `${removed} / ${totalStickerGoal}`;
-      setTimeout(showQuestion, 520);
+      maybeShowQuestion();
+    }
+
+    function maybeShowQuestion() {
+      if (removed === totalStickerGoal) {
+        setTimeout(showQuestion, 520);
+      }
     }
 
     function showQuestion() {
@@ -874,6 +882,7 @@
     });
 
     yesButton.addEventListener("click", celebrate);
+    progressSticker.addEventListener("click", removeProgressSticker);
 
     dittos.map(createDitto).forEach((ditto) => field.appendChild(ditto));
     scatterSparkles();
