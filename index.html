@@ -92,6 +92,7 @@
       font-weight: 700;
       box-shadow: 0 12px 32px rgba(88, 57, 119, 0.08);
       backdrop-filter: blur(14px);
+      pointer-events: auto;
     }
 
     .progress-dot {
@@ -103,13 +104,14 @@
       border-radius: 8px;
       background: url("public/assets/stickers/ditto/132.png") center / contain no-repeat;
       filter: drop-shadow(0 4px 4px rgba(91, 54, 124, 0.18));
-      transition: opacity 240ms ease, transform 240ms ease;
       cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .progress-dot.is-popped {
-      opacity: 0;
-      transform: scale(0.25) rotate(-12deg);
+      pointer-events: none;
+      transform-origin: 12% 24%;
+      animation: peel-counter 720ms cubic-bezier(0.2, 0.78, 0.26, 1) forwards;
     }
 
     .ditto-field {
@@ -485,9 +487,14 @@
       transform: translateY(0);
     }
 
-    .is-popped {
+    .ditto.is-popped {
       pointer-events: none;
-      animation: pop-out 360ms ease forwards;
+      transform-origin: 18% 22%;
+      animation: peel-off 760ms cubic-bezier(0.2, 0.78, 0.26, 1) forwards;
+    }
+
+    .ditto.is-popped .ditto-img {
+      animation: sticker-curl 760ms cubic-bezier(0.2, 0.78, 0.26, 1) forwards;
     }
 
     .stage.final .top-copy {
@@ -515,18 +522,59 @@
       }
     }
 
-    @keyframes pop-out {
+    @keyframes peel-off {
       0% {
         opacity: 1;
         transform: translate(-50%, -50%) rotate(var(--rot)) scale(1);
       }
-      70% {
-        opacity: 0.82;
-        transform: translate(-50%, -50%) rotate(calc(var(--rot) + 16deg)) scale(1.28);
+      26% {
+        opacity: 1;
+        transform: translate(calc(-50% + 8px), calc(-50% - 12px)) rotate(calc(var(--rot) + 8deg)) scale(1.06) skew(-3deg, 2deg);
+      }
+      58% {
+        opacity: 0.86;
+        transform: translate(calc(-50% + 34px), calc(-50% - 42px)) rotate(calc(var(--rot) + 28deg)) scale(0.92) skew(-8deg, 4deg);
       }
       100% {
         opacity: 0;
-        transform: translate(-50%, -50%) rotate(calc(var(--rot) - 18deg)) scale(0.12);
+        transform: translate(calc(-50% + 92px), calc(-50% - 92px)) rotate(calc(var(--rot) + 56deg)) scale(0.18) skew(-14deg, 7deg);
+      }
+    }
+
+    @keyframes sticker-curl {
+      0% {
+        transform: perspective(520px) rotateX(0deg) rotateY(0deg) scale(1);
+        filter: saturate(1);
+      }
+      26% {
+        transform: perspective(520px) rotateX(12deg) rotateY(-24deg) scale(1.04);
+        filter: saturate(1.08) drop-shadow(-10px 16px 10px rgba(91, 54, 124, 0.22));
+      }
+      58% {
+        transform: perspective(520px) rotateX(28deg) rotateY(-58deg) scale(0.96);
+        filter: saturate(1.02) drop-shadow(-16px 22px 13px rgba(91, 54, 124, 0.2));
+      }
+      100% {
+        transform: perspective(520px) rotateX(42deg) rotateY(-88deg) scale(0.72);
+        filter: saturate(0.86) drop-shadow(-18px 26px 16px rgba(91, 54, 124, 0.08));
+      }
+    }
+
+    @keyframes peel-counter {
+      0% {
+        opacity: 1;
+        transform: perspective(260px) rotateX(0deg) rotateY(0deg) translate(0, 0) scale(1);
+        filter: drop-shadow(0 4px 4px rgba(91, 54, 124, 0.18));
+      }
+      38% {
+        opacity: 1;
+        transform: perspective(260px) rotateX(18deg) rotateY(-48deg) translate(8px, -12px) scale(1.12);
+        filter: drop-shadow(-8px 12px 8px rgba(91, 54, 124, 0.2));
+      }
+      100% {
+        opacity: 0;
+        transform: perspective(260px) rotateX(34deg) rotateY(-92deg) translate(34px, -34px) scale(0.48);
+        filter: drop-shadow(-12px 18px 12px rgba(91, 54, 124, 0));
       }
     }
 
