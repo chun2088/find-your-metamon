@@ -95,11 +95,17 @@
     }
 
     .progress-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: var(--pink);
-      box-shadow: 0 0 0 5px rgba(255, 111, 169, 0.14);
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: url("public/assets/stickers/ditto/132.png") center / contain no-repeat;
+      filter: drop-shadow(0 4px 4px rgba(91, 54, 124, 0.18));
+      transition: opacity 240ms ease, transform 240ms ease;
+    }
+
+    .progress-dot.is-popped {
+      opacity: 0;
+      transform: scale(0.25) rotate(-12deg);
     }
 
     .ditto-field {
@@ -375,7 +381,7 @@
       pointer-events: none;
       z-index: 260;
       transform: translate(-50%, -50%);
-      animation: crawl-runner-away 3850ms steps(11, end) forwards;
+      animation: crawl-runner-away 5400ms steps(18, end) forwards;
     }
 
     .crawl-sprite {
@@ -394,19 +400,19 @@
     .crawl-sprite.stand {
       bottom: -8px;
       width: 138px;
-      animation: sprite-stand 1050ms steps(1, end) infinite;
+      animation: sprite-stand 1500ms steps(1, end) infinite;
     }
 
     .crawl-sprite.mid {
       bottom: 2px;
       width: 196px;
-      animation: sprite-mid 1050ms steps(1, end) infinite;
+      animation: sprite-mid 1500ms steps(1, end) infinite;
     }
 
     .crawl-sprite.pressed {
       bottom: 4px;
       width: 220px;
-      animation: sprite-pressed 1050ms steps(1, end) infinite;
+      animation: sprite-pressed 1500ms steps(1, end) infinite;
     }
 
     .celebration {
@@ -525,39 +531,6 @@
         opacity: 1;
         transform: translate(-50%, -50%) translate(0, 0) rotate(0deg) scale(1);
       }
-      9.09% {
-        transform: translate(-50%, -50%) translate(calc(var(--dx) * 0.09), calc(var(--dy) * 0.09)) rotate(1deg) scale(1.02);
-      }
-      18.18% {
-        transform: translate(-50%, -50%) translate(calc(var(--dx) * 0.18), calc(var(--dy) * 0.18)) rotate(-1deg) scale(1);
-      }
-      27.27% {
-        transform: translate(-50%, -50%) translate(calc(var(--dx) * 0.27), calc(var(--dy) * 0.27)) rotate(1deg) scale(1.02);
-      }
-      36.36% {
-        transform: translate(-50%, -50%) translate(calc(var(--dx) * 0.36), calc(var(--dy) * 0.36)) rotate(-1deg) scale(0.98);
-      }
-      45.45% {
-        transform: translate(-50%, -50%) translate(calc(var(--dx) * 0.45), calc(var(--dy) * 0.45)) rotate(1deg) scale(0.96);
-      }
-      54.54% {
-        transform: translate(-50%, -50%) translate(calc(var(--dx) * 0.54), calc(var(--dy) * 0.54)) rotate(-1deg) scale(0.94);
-      }
-      63.63% {
-        transform: translate(-50%, -50%) translate(calc(var(--dx) * 0.63), calc(var(--dy) * 0.63)) rotate(1deg) scale(0.92);
-      }
-      72.72% {
-        opacity: 1;
-        transform: translate(-50%, -50%) translate(calc(var(--dx) * 0.72), calc(var(--dy) * 0.72)) rotate(-1deg) scale(0.9);
-      }
-      81.81% {
-        opacity: 1;
-        transform: translate(-50%, -50%) translate(calc(var(--dx) * 0.81), calc(var(--dy) * 0.81)) rotate(1deg) scale(0.88);
-      }
-      90.9% {
-        opacity: 1;
-        transform: translate(-50%, -50%) translate(calc(var(--dx) * 0.9), calc(var(--dy) * 0.9)) rotate(-1deg) scale(0.86);
-      }
       100% {
         opacity: 0;
         transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) rotate(0deg) scale(0.82);
@@ -566,37 +539,43 @@
 
     @keyframes sprite-stand {
       0%,
-      33.332% {
+      19.999%,
+      80%,
+      100% {
         opacity: 1;
       }
-      33.333%,
-      100% {
+      20%,
+      79.999% {
         opacity: 0;
       }
     }
 
     @keyframes sprite-mid {
       0%,
-      33.332% {
-        opacity: 0;
-      }
-      33.333%,
-      66.665% {
-        opacity: 1;
-      }
-      66.666%,
+      19.999%,
+      40%,
+      59.999%,
+      80%,
       100% {
         opacity: 0;
+      }
+      20%,
+      39.999%,
+      60%,
+      79.999% {
+        opacity: 1;
       }
     }
 
     @keyframes sprite-pressed {
       0%,
-      66.665% {
+      39.999%,
+      60%,
+      100% {
         opacity: 0;
       }
-      66.666%,
-      100% {
+      40%,
+      59.999% {
         opacity: 1;
       }
     }
@@ -675,7 +654,8 @@
   </main>
 
   <script>
-    const stickerCount = 31;
+    const totalStickerGoal = 31;
+    const fieldStickerCount = 30;
     const collageSlots = [
       [6, 7, 38, -18, 78], [25, 6, 34, 14, 64], [47, 8, 39, -8, 91], [70, 7, 35, 22, 55], [93, 9, 40, -16, 82],
       [13, 22, 42, 24, 66], [36, 20, 37, -22, 96], [61, 23, 43, 10, 70], [85, 22, 39, -26, 88],
@@ -686,11 +666,11 @@
       [22, 49, 52, 33, 101], [69, 48, 51, -34, 103], [43, 28, 50, 19, 105], [56, 84, 53, -11, 107]
     ];
     const stickerNumbers = [
-      132, 7, 84, 132, 28, 115, 46, 132, 91, 47, 67, 139, 22, 104, 132, 58,
-      3, 126, 75, 149, 129, 99, 52, 143, 18, 110, 64, 121, 36, 88, 151
+      132, 7, 84, 132, 28, 115, 46, 132, 91, 47, 67, 139, 22, 105, 58,
+      3, 126, 95, 149, 129, 99, 52, 143, 18, 110, 64, 74, 67, 88, 151
     ];
 
-    const dittos = Array.from({ length: stickerCount }, (_, index) => {
+    const dittos = Array.from({ length: fieldStickerCount }, (_, index) => {
       const number = String(stickerNumbers[index]).padStart(3, "0");
       const [x, y, size, rot, layer] = collageSlots[index];
 
@@ -707,6 +687,7 @@
     });
 
     const field = document.getElementById("dittoField");
+    const progressSticker = document.querySelector(".progress-dot");
     const counter = document.getElementById("counter");
     const panel = document.getElementById("questionPanel");
     const stage = document.getElementById("stage");
@@ -785,13 +766,21 @@
       playDittoSound();
       button.classList.add("is-popped");
       removed += 1;
-      counter.textContent = `${removed} / ${dittos.length}`;
+      counter.textContent = `${removed} / ${totalStickerGoal}`;
 
       setTimeout(() => button.remove(), 380);
 
       if (removed === dittos.length) {
-        setTimeout(showQuestion, 520);
+        setTimeout(removeProgressSticker, 420);
       }
+    }
+
+    function removeProgressSticker() {
+      if (!progressSticker || progressSticker.classList.contains("is-popped")) return;
+      progressSticker.classList.add("is-popped");
+      removed = totalStickerGoal;
+      counter.textContent = `${removed} / ${totalStickerGoal}`;
+      setTimeout(showQuestion, 520);
     }
 
     function showQuestion() {
@@ -876,7 +865,7 @@
         <img class="crawl-sprite pressed" src="public/assets/crawl-sprite/slime-pressed.png" alt="" draggable="false" />
       `;
       stage.appendChild(runner);
-      setTimeout(() => runner.remove(), 3900);
+      setTimeout(() => runner.remove(), 5450);
     }
 
     noButton.addEventListener("click", () => {
