@@ -659,9 +659,13 @@
       [13, 90, 47, -14, 81], [35, 91, 42, 26, 59], [58, 90, 48, -21, 92], [82, 91, 45, 15, 67],
       [22, 49, 52, 33, 101], [69, 48, 51, -34, 103], [43, 28, 50, 19, 105], [56, 84, 53, -11, 107]
     ];
+    const stickerNumbers = [
+      132, 7, 84, 132, 28, 115, 46, 132, 91, 13, 67, 139, 22, 104, 132, 58,
+      3, 126, 75, 149, 31, 99, 52, 143, 18, 110, 64, 121, 36, 88, 151
+    ];
 
     const dittos = Array.from({ length: stickerCount }, (_, index) => {
-      const number = String(index + 1).padStart(3, "0");
+      const number = String(stickerNumbers[index]).padStart(3, "0");
       const [x, y, size, rot, layer] = collageSlots[index];
 
       return {
