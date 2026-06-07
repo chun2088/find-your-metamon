@@ -378,7 +378,7 @@
       box-shadow: none;
       overflow: visible;
       transform-origin: 50% 80%;
-      animation: crawl-away 4000ms linear forwards;
+      animation: crawl-away 3850ms steps(11, end) forwards;
     }
 
     .no.is-crawling::before {
@@ -405,13 +405,19 @@
     .crawl-sprite.stand {
       bottom: -8px;
       width: 138px;
-      animation: sprite-stand 1400ms steps(1, end) infinite;
+      animation: sprite-stand 1050ms steps(1, end) infinite;
+    }
+
+    .crawl-sprite.mid {
+      bottom: 2px;
+      width: 196px;
+      animation: sprite-mid 1050ms steps(1, end) infinite;
     }
 
     .crawl-sprite.pressed {
       bottom: 4px;
       width: 220px;
-      animation: sprite-pressed 1400ms steps(1, end) infinite;
+      animation: sprite-pressed 1050ms steps(1, end) infinite;
     }
 
     .celebration {
@@ -530,35 +536,66 @@
         opacity: 1;
         transform: translate(0, 0) rotate(0deg) scale(1);
       }
-      12% {
+      9.09% {
+        transform: translate(0, 28px) rotate(1deg) scale(1.02);
+      }
+      18.18% {
+        transform: translate(0, 56px) rotate(-1deg) scale(1);
+      }
+      27.27% {
+        transform: translate(0, 84px) rotate(1deg) scale(1.02);
+      }
+      36.36% {
+        transform: translate(0, 112px) rotate(-1deg) scale(0.98);
+      }
+      45.45% {
+        transform: translate(0, 140px) rotate(1deg) scale(0.96);
+      }
+      54.54% {
+        transform: translate(0, 168px) rotate(-1deg) scale(0.94);
+      }
+      63.63% {
+        transform: translate(0, 196px) rotate(1deg) scale(0.92);
+      }
+      72.72% {
         opacity: 1;
-        transform: translate(0, 8px) rotate(0deg) scale(1.04);
+        transform: translate(0, 224px) rotate(-1deg) scale(0.9);
       }
-      30% {
-        transform: translate(90px, 8px) rotate(-1deg) scale(1);
-      }
-      48% {
-        transform: translate(178px, 10px) rotate(1deg) scale(1.02);
-      }
-      66% {
-        transform: translate(30vw, 8px) rotate(-1deg) scale(0.98);
-      }
-      84% {
+      81.81% {
         opacity: 1;
-        transform: translate(48vw, 10px) rotate(1deg) scale(0.92);
+        transform: translate(0, 252px) rotate(1deg) scale(0.88);
+      }
+      90.9% {
+        opacity: 1;
+        transform: translate(0, 280px) rotate(-1deg) scale(0.86);
       }
       100% {
         opacity: 0;
-        transform: translate(68vw, 10px) rotate(0deg) scale(0.82);
+        transform: translate(0, 330px) rotate(0deg) scale(0.82);
       }
     }
 
     @keyframes sprite-stand {
       0%,
-      49.999% {
+      33.332% {
         opacity: 1;
       }
-      50%,
+      33.333%,
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes sprite-mid {
+      0%,
+      33.332% {
+        opacity: 0;
+      }
+      33.333%,
+      66.665% {
+        opacity: 1;
+      }
+      66.666%,
       100% {
         opacity: 0;
       }
@@ -566,10 +603,10 @@
 
     @keyframes sprite-pressed {
       0%,
-      49.999% {
+      66.665% {
         opacity: 0;
       }
-      50%,
+      66.666%,
       100% {
         opacity: 1;
       }
@@ -813,10 +850,11 @@
       playDittoSound();
       noButton.innerHTML = `
         <img class="crawl-sprite stand" src="public/assets/crawl-sprite/slime-stand.png" alt="" draggable="false" />
+        <img class="crawl-sprite mid" src="public/assets/crawl-sprite/slime-mid.png" alt="" draggable="false" />
         <img class="crawl-sprite pressed" src="public/assets/crawl-sprite/slime-pressed.png" alt="" draggable="false" />
       `;
       noButton.classList.add("is-crawling");
-      setTimeout(() => noButton.remove(), 4000);
+      setTimeout(() => noButton.remove(), 3850);
     });
 
     yesButton.addEventListener("click", celebrate);
