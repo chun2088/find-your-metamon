@@ -2232,7 +2232,9 @@
 
     function getEscapeVector(sourceButton, avoidButton) {
       const distance = Math.max(window.innerWidth, window.innerHeight) * 1.18;
-      const angle = Math.random() * Math.PI * 2;
+      const blockedStart = Math.PI / 4;
+      const blockedSize = Math.PI / 2;
+      const angle = (blockedStart + blockedSize + Math.random() * (Math.PI * 2 - blockedSize)) % (Math.PI * 2);
       return { dx: Math.cos(angle) * distance, dy: Math.sin(angle) * distance };
     }
 
