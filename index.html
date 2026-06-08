@@ -1224,6 +1224,7 @@
     .chat-screen {
       background: #edeade;
       padding: 14px 14px calc(16px + env(safe-area-inset-bottom));
+      overflow-y: auto;
     }
 
     .chat-header {
@@ -1263,7 +1264,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      padding: 0 6px 130px;
+      padding: 0 6px 124px;
     }
 
     .moment-bubble {
@@ -1300,13 +1301,14 @@
       position: absolute;
       left: 14px;
       right: 14px;
-      bottom: calc(82px + env(safe-area-inset-bottom));
+      bottom: calc(14px + env(safe-area-inset-bottom));
       display: none;
       padding: 18px;
       border-radius: 28px;
       background: rgba(255, 248, 234, 0.96);
       box-shadow: 0 16px 34px rgba(92, 80, 62, 0.12);
       text-align: center;
+      z-index: 2;
     }
 
     .final-question.is-visible {
@@ -1359,6 +1361,14 @@
       color: #b2a897;
       font-size: 15px;
       box-shadow: 0 10px 22px rgba(92, 80, 62, 0.08);
+      transition: opacity 220ms ease, transform 220ms ease;
+      z-index: 1;
+    }
+
+    .fake-input.is-hidden {
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
     }
 
     .success-screen {
@@ -1711,6 +1721,7 @@
     const matchingStartButton = document.getElementById("matchingStartButton");
     const momentFlow = document.getElementById("momentFlow");
     const chatQuestion = document.getElementById("chatQuestion");
+    const fakeInput = document.querySelector(".fake-input");
     const chatYesButton = document.getElementById("chatYesButton");
     const chatNoButton = document.getElementById("chatNoButton");
     const savePageButton = document.getElementById("savePageButton");
@@ -2030,6 +2041,7 @@
       momentsStarted = true;
       momentFlow.innerHTML = "";
       chatQuestion.classList.remove("is-visible");
+      fakeInput.classList.remove("is-hidden");
 
       const moments = [
         { icon: "🐟", mine: false },
@@ -2047,13 +2059,17 @@
         const bubble = document.createElement("div");
         bubble.className = `moment-bubble ${moment.mine ? "mine" : ""} ${moment.final ? "final" : ""}`;
         bubble.textContent = moment.icon;
-        bubble.style.setProperty("--delay", `${index * 0.34}s`);
+        bubble.style.setProperty("--delay", `${index * 0.7}s`);
         momentFlow.appendChild(bubble);
+        setTimeout(() => {
+          bubble.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        }, index * 700 + 120);
       });
 
       setTimeout(() => {
+        fakeInput.classList.add("is-hidden");
         chatQuestion.classList.add("is-visible");
-      }, moments.length * 340 + 520);
+      }, moments.length * 700 + 620);
     }
 
     function showToast() {
