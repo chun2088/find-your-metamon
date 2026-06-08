@@ -533,22 +533,6 @@
       box-shadow: inset -6px -7px 0 rgba(168, 15, 58, 0.15);
     }
 
-    .answer-note {
-      margin-top: 16px;
-      min-height: 28px;
-      color: var(--rose);
-      font-size: clamp(16px, 3vw, 22px);
-      font-weight: 900;
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 260ms ease, transform 260ms ease;
-    }
-
-    .answer-note.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
     .ditto.is-popped {
       pointer-events: none;
       animation: pop-out 360ms ease forwards;
@@ -768,7 +752,6 @@
           <button class="choice yes" id="yesButton" type="button">네</button>
           <button class="choice no" id="noButton" type="button">아니요</button>
         </div>
-        <div class="answer-note" id="answerNote">이제 장미랑 하트만 남겨둘게요.</div>
       </div>
     </section>
   </main>
@@ -815,7 +798,6 @@
     const noButton = document.getElementById("noButton");
     const yesButton = document.getElementById("yesButton");
     const celebration = document.getElementById("celebration");
-    const answerNote = document.getElementById("answerNote");
     let removed = 0;
     let audioContext;
     let waterTimer;
@@ -1013,7 +995,15 @@
       }
     }
 
+    function removeRealPokemonIfPresent() {
+      const realPokemon = document.querySelector(".real-pokemon");
+      if (!realPokemon) return;
+      realPokemon.classList.add("is-popped");
+      setTimeout(() => realPokemon.remove(), 560);
+    }
+
     function showQuestion() {
+      removeRealPokemonIfPresent();
       stage.classList.add("final");
       panel.classList.add("is-visible");
       panel.setAttribute("aria-hidden", "false");
@@ -1034,7 +1024,6 @@
 
     function celebrate() {
       playYesSound();
-      answerNote.classList.add("is-visible");
       yesButton.textContent = "좋아요";
       yesButton.disabled = true;
       noButton.remove();
