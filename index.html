@@ -430,19 +430,19 @@
     .crawl-sprite.stand {
       bottom: -8px;
       width: 138px;
-      animation: sprite-stand 1250ms steps(1, end) infinite;
+      animation: sprite-stand 1000ms steps(1, end) infinite;
     }
 
     .crawl-sprite.mid {
       bottom: 2px;
       width: 196px;
-      animation: sprite-mid 1250ms steps(1, end) infinite;
+      animation: sprite-mid 1000ms steps(1, end) infinite;
     }
 
     .crawl-sprite.pressed {
       bottom: 4px;
       width: 220px;
-      animation: sprite-pressed 1250ms steps(1, end) infinite;
+      animation: sprite-pressed 1000ms steps(1, end) infinite;
     }
 
     .celebration {
@@ -676,43 +676,39 @@
 
     @keyframes sprite-stand {
       0%,
-      19.999%,
-      80%,
-      100% {
+      24.999% {
         opacity: 1;
       }
-      20%,
-      79.999% {
+      25%,
+      100% {
         opacity: 0;
       }
     }
 
     @keyframes sprite-mid {
       0%,
-      19.999%,
-      40%,
-      59.999%,
-      80%,
-      100% {
+      24.999%,
+      50%,
+      74.999% {
         opacity: 0;
       }
-      20%,
-      39.999%,
-      60%,
-      79.999% {
+      25%,
+      49.999%,
+      75%,
+      100% {
         opacity: 1;
       }
     }
 
     @keyframes sprite-pressed {
       0%,
-      39.999%,
-      60%,
+      49.999%,
+      75%,
       100% {
         opacity: 0;
       }
-      40%,
-      59.999% {
+      50%,
+      74.999% {
         opacity: 1;
       }
     }
