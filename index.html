@@ -1346,34 +1346,29 @@
       text-align: center;
     }
 
-    .moment-title {
-      margin: 10px auto 18px;
-      max-width: 260px;
-      text-align: center;
-      font-size: 25px;
-      line-height: 1.2;
-    }
-
     .moment-flow {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      padding: 0 6px 124px;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 6px 124px;
       transition: transform 520ms ease;
     }
 
     .moment-bubble {
-      align-self: flex-start;
+      align-self: center;
+      justify-content: center;
       display: flex;
       align-items: center;
-      gap: 8px;
-      max-width: 82%;
-      min-height: 48px;
-      padding: 11px 14px;
-      border-radius: 20px 20px 20px 5px;
-      background: #fff;
-      font-size: 25px;
-      box-shadow: 0 8px 18px rgba(92, 80, 62, 0.08);
+      width: min(82%, 290px);
+      min-height: 54px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #fff 0%, #fffdf5 42%, #ffe07a 100%);
+      color: #251f19;
+      font-size: 27px;
+      text-align: center;
+      box-shadow: 0 8px 18px rgba(92, 80, 62, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.72);
       opacity: 0;
       transform: translateY(32px) scale(0.96);
       animation: bubble-rise 520ms cubic-bezier(0.16, 0.88, 0.26, 1.18) forwards;
@@ -1381,15 +1376,12 @@
     }
 
     .moment-bubble.mine {
-      align-self: flex-end;
-      border-radius: 20px 20px 5px 20px;
-      background: #ffe07a;
+      align-self: center;
     }
 
     .moment-bubble.final {
-      align-self: flex-start;
-      border-radius: 24px;
-      background: #fff;
+      align-self: center;
+      background: linear-gradient(90deg, #fff 0%, #fff4f6 44%, #ffd4dd 100%);
       color: #e8485f;
     }
 
@@ -1752,7 +1744,6 @@
         <button class="icon-button" type="button" aria-label="알림">○</button>
       </header>
       <div class="chat-banner">디또가 두 사람의 순간을 불러오고 있어요.</div>
-      <h1 class="moment-title">대화 대신,<br />우리의 순간들이 쌓였어요</h1>
       <div class="moment-flow" id="momentFlow" aria-label="함께한 순간들"></div>
       <div class="final-question" id="chatQuestion">
         <p>이제는<br />조금 더 특별한 사이가 되어볼까요?</p>
@@ -2156,21 +2147,21 @@
       fakeInput.classList.remove("is-hidden");
 
       const moments = [
-        { icon: "🐟", mine: false },
-        { icon: "🍺", mine: true },
-        { icon: "🍜", mine: false },
-        { icon: "🥃🌿", mine: true },
-        { icon: "🍷", mine: false },
-        { icon: "🍶 zzz", mine: true },
-        { icon: "🧀🍜", mine: false },
-        { icon: "🎬", mine: true },
-        { icon: "❤️ 🤝 ?", mine: false, final: true }
+        { icon: "🐟" },
+        { icon: "🍺" },
+        { icon: "🍜" },
+        { icon: "🥃🌿" },
+        { icon: "🍷" },
+        { icon: "🍶 zzz" },
+        { icon: "🧀🍜" },
+        { icon: "🎬" },
+        { icon: "❤️ 🤝 ?", final: true }
       ];
 
       const bubbleDelay = 1500;
       moments.forEach((moment, index) => {
         const bubble = document.createElement("div");
-        bubble.className = `moment-bubble ${moment.mine ? "mine" : ""} ${moment.final ? "final" : ""}`;
+        bubble.className = `moment-bubble ${moment.final ? "final" : ""}`;
         bubble.textContent = moment.icon;
         bubble.style.setProperty("--delay", `${index * (bubbleDelay / 1000)}s`);
         momentFlow.appendChild(bubble);
