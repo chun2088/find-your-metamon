@@ -1748,13 +1748,12 @@
     <section class="app-screen chat-screen" data-screen="chat">
       <header class="chat-header">
         <button class="icon-button" type="button" aria-label="뒤로가기">‹</button>
-        <span class="chat-title">모동과 대화</span>
+        <span class="chat-title">생각하는메타몽과 대화</span>
         <button class="icon-button" type="button" aria-label="알림">○</button>
       </header>
       <div class="chat-banner">디또가 두 사람의 순간을 불러오고 있어요.</div>
       <div class="moment-flow" id="momentFlow" aria-label="함께한 순간들"></div>
       <div class="final-question" id="chatQuestion">
-        <p>이제는<br />조금 더 특별한 사이가 되어볼까요?</p>
         <div class="chat-choice-row">
           <button class="chat-choice yes" id="chatYesButton" type="button">예</button>
           <button class="chat-choice no" id="chatNoButton" type="button">아니오</button>
@@ -1772,8 +1771,8 @@
         </div>
         <h1>매칭이 성사됐어요</h1>
         <p>Ditto와 Reuleaux의 이야기가<br />이제 진짜로 시작됩니다.</p>
-        <p>모동아,<br />나는 너랑 함께하는 시간이 좋고,<br />앞으로도 더 많은 순간을 같이 쌓아가고 싶어.</p>
-        <p>괜찮다면<br />우리, 조금 더 특별한 사이가 되어보자.</p>
+        <p>민경님,<br />나는 너랑 함께하는 시간이, 대화가, 경험이 좋고,<br />앞으로도 더 많은 순간을 같이 쌓아가고 싶어요.</p>
+        <p>우리, 조금 더 특별한 사이가 되어봐요.</p>
         <button class="app-button" id="savePageButton" type="button">우리의 첫 페이지 저장하기</button>
       </article>
     </section>
@@ -2163,7 +2162,7 @@
         { icon: "🍶 zzz" },
         { icon: "🥩🧀🍜" },
         { icon: "🍿🎬" },
-        { icon: "❤️ 🤝 ?", final: true }
+        { icon: "❤️ ❤️ ?", final: true }
       ];
 
       const bubbleDelay = 1500;
@@ -2189,26 +2188,9 @@
     }
 
     function getEscapeVector(sourceButton, avoidButton) {
-      const noRect = sourceButton.getBoundingClientRect();
-      const yesRect = avoidButton.getBoundingClientRect();
-      const toYesX = (yesRect.left + yesRect.width / 2) - (noRect.left + noRect.width / 2);
-      const toYesY = (yesRect.top + yesRect.height / 2) - (noRect.top + noRect.height / 2);
-      const toYesLength = Math.hypot(toYesX, toYesY) || 1;
-      const yesUnitX = toYesX / toYesLength;
-      const yesUnitY = toYesY / toYesLength;
       const distance = Math.max(window.innerWidth, window.innerHeight) * 1.18;
-
-      for (let attempt = 0; attempt < 24; attempt += 1) {
-        const angle = Math.random() * Math.PI * 2;
-        const dx = Math.cos(angle);
-        const dy = Math.sin(angle);
-        const pointsTowardYes = dx * yesUnitX + dy * yesUnitY > 0.28;
-        if (!pointsTowardYes) {
-          return { dx: dx * distance, dy: dy * distance };
-        }
-      }
-
-      return { dx: -yesUnitY * distance, dy: yesUnitX * distance };
+      const angle = Math.random() * Math.PI * 2;
+      return { dx: Math.cos(angle) * distance, dy: Math.sin(angle) * distance };
     }
 
     function spawnCrawlingDitto(sourceButton, avoidButton, host = mobileApp) {
