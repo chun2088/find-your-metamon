@@ -1347,12 +1347,21 @@
     }
 
     .moment-flow {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: calc(92px + env(safe-area-inset-bottom));
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 12px;
-      padding: 18px 6px 124px;
-      transition: transform 520ms ease;
+      padding: 0 6px;
+      transition: bottom 420ms ease;
+      pointer-events: none;
+    }
+
+    .chat-screen.question-shown .moment-flow {
+      bottom: calc(228px + env(safe-area-inset-bottom));
     }
 
     .moment-bubble {
@@ -1372,7 +1381,6 @@
       opacity: 0;
       transform: translateY(32px) scale(0.96);
       animation: bubble-rise 520ms cubic-bezier(0.16, 0.88, 0.26, 1.18) forwards;
-      animation-delay: var(--delay);
     }
 
     .moment-bubble.mine {
@@ -2142,7 +2150,7 @@
       if (momentsStarted) return;
       momentsStarted = true;
       momentFlow.innerHTML = "";
-      momentFlow.style.transform = "translateY(0)";
+      document.querySelector(".chat-screen").classList.remove("question-shown");
       chatQuestion.classList.remove("is-visible");
       fakeInput.classList.remove("is-hidden");
 
@@ -2153,36 +2161,26 @@
         { icon: "🥃🌿" },
         { icon: "🍷" },
         { icon: "🍶 zzz" },
-        { icon: "🧀🍜" },
-        { icon: "🎬" },
+        { icon: "🥩🧀🍜" },
+        { icon: "🍿🎬" },
         { icon: "❤️ 🤝 ?", final: true }
       ];
 
       const bubbleDelay = 1500;
       moments.forEach((moment, index) => {
-        const bubble = document.createElement("div");
-        bubble.className = `moment-bubble ${moment.final ? "final" : ""}`;
-        bubble.textContent = moment.icon;
-        bubble.style.setProperty("--delay", `${index * (bubbleDelay / 1000)}s`);
-        momentFlow.appendChild(bubble);
         setTimeout(() => {
-          pushMomentFlowUp();
-        }, index * bubbleDelay + 260);
+          const bubble = document.createElement("div");
+          bubble.className = `moment-bubble ${moment.final ? "final" : ""}`;
+          bubble.textContent = moment.icon;
+          momentFlow.appendChild(bubble);
+        }, index * bubbleDelay);
       });
 
       setTimeout(() => {
         fakeInput.classList.add("is-hidden");
         chatQuestion.classList.add("is-visible");
+        document.querySelector(".chat-screen").classList.add("question-shown");
       }, moments.length * bubbleDelay + 760);
-    }
-
-    function pushMomentFlowUp() {
-      const chatScreen = document.querySelector(".chat-screen.is-active");
-      if (!chatScreen) return;
-      const inputReserve = 118;
-      const overflow = Math.max(0, momentFlow.scrollHeight - (chatScreen.clientHeight - momentFlow.offsetTop - inputReserve));
-      const maxLift = Math.min(overflow, 260);
-      momentFlow.style.transform = `translateY(-${maxLift}px)`;
     }
 
     function showToast() {
