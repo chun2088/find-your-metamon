@@ -732,6 +732,856 @@
       }
     }
 
+    .stage-clear {
+      width: min(88vw, 420px);
+      text-align: center;
+      display: grid;
+      justify-items: center;
+      gap: 18px;
+    }
+
+    .stage-clear h2 {
+      margin: 0;
+      font-size: clamp(42px, 12vw, 76px);
+      line-height: 0.98;
+      color: #2f2640;
+    }
+
+    .stage-clear p {
+      margin: 0;
+      color: var(--soft-ink);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .center-next {
+      min-width: 190px;
+      min-height: 58px;
+      border: 0;
+      border-radius: 999px;
+      background: #ffd84d;
+      color: #2f2640;
+      font-size: 18px;
+      font-weight: 900;
+      box-shadow: 0 18px 32px rgba(151, 111, 19, 0.2);
+      cursor: pointer;
+    }
+
+    .clear-sticker {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      z-index: 9;
+      width: clamp(72px, var(--s), 145px);
+      aspect-ratio: 1;
+      object-fit: contain;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -50%) rotate(var(--r)) scale(0.24);
+      filter: drop-shadow(0 14px 16px rgba(91, 54, 124, 0.18));
+      animation: clear-sticker-pop 1200ms cubic-bezier(0.16, 0.86, 0.24, 1.12) forwards;
+      animation-delay: var(--d);
+    }
+
+    .stage.is-hidden {
+      display: none;
+    }
+
+    .mobile-app {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: none;
+      justify-content: center;
+      overflow: hidden;
+      background: #f8f0df;
+      color: #251f19;
+      touch-action: manipulation;
+    }
+
+    .mobile-app.is-visible {
+      display: flex;
+    }
+
+    .app-screen {
+      position: relative;
+      display: none;
+      width: min(100vw, 430px);
+      min-height: 100svh;
+      padding: 24px 22px calc(24px + env(safe-area-inset-bottom));
+      overflow: hidden;
+      background: #fff8ea;
+    }
+
+    .app-screen.is-active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-screen.scrollable {
+      overflow-y: auto;
+      padding-bottom: calc(104px + env(safe-area-inset-bottom));
+    }
+
+    .splash-screen {
+      justify-content: center;
+      align-items: center;
+      gap: 26px;
+      background: #fbf3e3;
+    }
+
+    .brand-logo {
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+      font-size: clamp(45px, 13vw, 70px);
+      line-height: 0.9;
+      font-weight: 1000;
+      letter-spacing: 0;
+      text-align: center;
+    }
+
+    .brand-logo .ditto-word {
+      color: #a875db;
+      border-radius: 999px;
+    }
+
+    .brand-logo .amp {
+      color: #2f2640;
+      font-size: 0.52em;
+    }
+
+    .brand-logo .reuleaux-word {
+      color: #211f1f;
+      font-family: "Trebuchet MS", "Arial Rounded MT Bold", system-ui, sans-serif;
+    }
+
+    .symbol-row {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      height: 80px;
+    }
+
+    .ditto-symbol,
+    .reuleaux-symbol {
+      position: relative;
+      width: 58px;
+      height: 54px;
+      flex: 0 0 auto;
+      filter: drop-shadow(0 12px 16px rgba(67, 46, 85, 0.12));
+    }
+
+    .ditto-symbol {
+      border-radius: 48% 52% 42% 58% / 48% 42% 58% 52%;
+      background: linear-gradient(145deg, #c99af3, #a875db);
+      animation: float-join-left 1800ms ease-in-out infinite;
+    }
+
+    .ditto-symbol::before,
+    .ditto-symbol::after {
+      position: absolute;
+      top: 23px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #2f2640;
+      content: "";
+    }
+
+    .ditto-symbol::before {
+      left: 22px;
+    }
+
+    .ditto-symbol::after {
+      right: 20px;
+    }
+
+    .reuleaux-symbol {
+      display: grid;
+      place-items: center;
+      color: #2f2640;
+      font-weight: 1000;
+      background: #ffd84d;
+      clip-path: polygon(50% 0, 96% 78%, 4% 78%);
+      animation: float-join-right 1800ms ease-in-out infinite;
+    }
+
+    .reuleaux-symbol::after {
+      content: "";
+      width: 22px;
+      height: 13px;
+      border: 3px solid #2f2640;
+      border-top: 0;
+      border-radius: 0 0 999px 999px;
+      transform: translateY(3px);
+    }
+
+    .app-illustration {
+      position: relative;
+      height: 220px;
+      margin-top: 18px;
+    }
+
+    .line-person {
+      position: absolute;
+      bottom: 28px;
+      width: 104px;
+      height: 142px;
+      border: 4px solid #28221c;
+      border-bottom: 0;
+      border-radius: 58px 58px 0 0;
+      background: rgba(255, 255, 255, 0.38);
+    }
+
+    .line-person.left {
+      left: 64px;
+      transform: rotate(-6deg);
+    }
+
+    .line-person.right {
+      right: 64px;
+      transform: rotate(6deg);
+    }
+
+    .line-person::before {
+      position: absolute;
+      top: -40px;
+      left: 22px;
+      width: 56px;
+      height: 56px;
+      border: 4px solid #28221c;
+      border-radius: 50%;
+      background: #fff8ea;
+      content: "";
+    }
+
+    .doodle {
+      position: absolute;
+      color: #f2bd27;
+      font-size: 24px;
+      font-weight: 900;
+      animation: app-bob 2800ms ease-in-out infinite;
+    }
+
+    .doodle:nth-child(3) { left: 38px; top: 34px; color: #ff8aa5; }
+    .doodle:nth-child(4) { right: 42px; top: 42px; }
+    .doodle:nth-child(5) { left: 48%; top: 4px; color: #9d74d5; }
+
+    .screen-title {
+      margin: 0;
+      font-size: 32px;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .screen-copy {
+      margin: 16px 0 0;
+      color: #736758;
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    .highlight {
+      display: inline;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: #ffe07a;
+      color: #251f19;
+      font-weight: 900;
+    }
+
+    .app-footer {
+      margin-top: auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .dots button {
+      width: 8px;
+      height: 8px;
+      border: 0;
+      padding: 0;
+      border-radius: 50%;
+      background: #d6c9b5;
+      cursor: pointer;
+    }
+
+    .dots button.active {
+      width: 22px;
+      border-radius: 999px;
+      background: #ffd84d;
+    }
+
+    .app-button {
+      width: 100%;
+      min-height: 58px;
+      border: 0;
+      border-radius: 999px;
+      background: #ffd84d;
+      color: #28221c;
+      font-size: 17px;
+      font-weight: 1000;
+      box-shadow: 0 12px 26px rgba(160, 115, 10, 0.18);
+      cursor: pointer;
+    }
+
+    .nickname-wrap {
+      display: grid;
+      gap: 14px;
+      margin-top: 42px;
+    }
+
+    .nickname-input {
+      width: 100%;
+      min-height: 68px;
+      border: 2px solid transparent;
+      border-radius: 24px;
+      padding: 0 20px;
+      background: #fff;
+      color: #251f19;
+      font-size: 21px;
+      font-weight: 800;
+      box-shadow: 0 16px 34px rgba(87, 60, 25, 0.08);
+      outline: 0;
+    }
+
+    .nickname-input:focus {
+      border-color: #ffd84d;
+    }
+
+    .input-hint {
+      min-height: 22px;
+      margin: 0 6px;
+      color: #9b6b2f;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .nickname-symbol {
+      align-self: center;
+      margin: 28px auto 0;
+      transition: transform 260ms ease, filter 260ms ease;
+    }
+
+    .nickname-symbol.is-sparkling {
+      animation: reuleaux-spark 640ms ease;
+    }
+
+    .match-screen {
+      background: #edeade;
+      padding: 16px 18px calc(82px + env(safe-area-inset-bottom));
+    }
+
+    .app-header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 44px;
+      font-size: 17px;
+      font-weight: 1000;
+    }
+
+    .icon-button {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.55);
+      color: #28221c;
+      font-size: 18px;
+    }
+
+    .match-notice {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 14px 2px 16px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: #fff;
+      font-size: 15px;
+      font-weight: 1000;
+      line-height: 1.38;
+      box-shadow: 0 10px 22px rgba(92, 80, 62, 0.12);
+    }
+
+    .date-chip {
+      align-self: center;
+      margin: 2px auto 14px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: #d9d8d2;
+      color: #4b4842;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .locked-profile {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 118px;
+      margin: 0 42px 18px;
+      border-radius: 24px;
+      overflow: hidden;
+      background:
+        linear-gradient(rgba(78, 71, 46, 0.58), rgba(78, 71, 46, 0.58)),
+        radial-gradient(circle at 26% 34%, rgba(255, 216, 77, 0.75), transparent 24%),
+        radial-gradient(circle at 68% 30%, rgba(168, 117, 219, 0.7), transparent 21%),
+        linear-gradient(135deg, #bcb08d, #807a6e);
+      color: #fff;
+      font-size: 21px;
+      font-weight: 1000;
+      text-align: center;
+      box-shadow: inset 0 0 34px rgba(0, 0, 0, 0.14);
+    }
+
+    .locked-profile::before {
+      content: "▣";
+      display: block;
+      margin-bottom: 10px;
+      font-size: 31px;
+      line-height: 1;
+    }
+
+    .match-chat {
+      display: grid;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .match-speaker {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      column-gap: 10px;
+      align-items: end;
+    }
+
+    .match-avatar {
+      grid-row: 1 / span 2;
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 5px 12px rgba(92, 80, 62, 0.08);
+    }
+
+    .match-avatar .ditto-symbol {
+      width: 32px;
+      height: 30px;
+      animation: none;
+    }
+
+    .match-name {
+      color: #6e695f;
+      font-size: 15px;
+      font-weight: 1000;
+    }
+
+    .match-bubbles {
+      display: grid;
+      gap: 8px;
+      grid-column: 2;
+      margin-top: 8px;
+    }
+
+    .match-bubble {
+      padding: 13px 16px;
+      border-radius: 22px 22px 22px 6px;
+      background: #fff;
+      color: #1f1d1a;
+      font-size: 15px;
+      line-height: 1.5;
+      font-weight: 800;
+      box-shadow: 0 8px 18px rgba(92, 80, 62, 0.07);
+    }
+
+    .symbol-pair {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .mini-heart {
+      color: #ff7893;
+      font-weight: 1000;
+    }
+
+    .match-cta {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: calc(18px + env(safe-area-inset-bottom));
+    }
+
+    .sticky-cta {
+      position: sticky;
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      margin-top: auto;
+      padding-top: 24px;
+      background: linear-gradient(transparent, #fff8ea 35%);
+    }
+
+    .profile-cta {
+      margin-top: 22px;
+      padding-bottom: 8px;
+    }
+
+    .profile-hero {
+      margin-top: 18px;
+      padding: 22px;
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 216, 77, 0.8) 0 18px, transparent 19px),
+        radial-gradient(circle at 80% 28%, rgba(255, 138, 165, 0.28) 0 18px, transparent 19px),
+        #fff;
+      box-shadow: 0 16px 34px rgba(87, 60, 25, 0.08);
+    }
+
+    .profile-avatar {
+      display: grid;
+      place-items: center;
+      width: 128px;
+      height: 116px;
+      margin: 0 auto 18px;
+    }
+
+    .profile-hero h2,
+    .info-section h3 {
+      margin: 0;
+      font-size: 25px;
+      line-height: 1.25;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      margin-top: 12px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: #ffe07a;
+      color: #3f331e;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .info-section {
+      margin-top: 18px;
+      padding: 22px;
+      border-radius: 26px;
+      background: #fff;
+      box-shadow: 0 16px 34px rgba(87, 60, 25, 0.07);
+    }
+
+    .info-list {
+      margin-top: 18px;
+      border-top: 1px solid #eee4d2;
+    }
+
+    .info-row {
+      display: grid;
+      grid-template-columns: 98px 1fr;
+      gap: 12px;
+      padding: 13px 0;
+      border-bottom: 1px solid #eee4d2;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .info-row span:first-child {
+      color: #8b8174;
+      font-weight: 800;
+    }
+
+    .info-row span:last-child {
+      color: #251f19;
+      font-weight: 900;
+    }
+
+    .chat-screen {
+      background: #edeade;
+      padding: 14px 14px calc(16px + env(safe-area-inset-bottom));
+      overflow: hidden;
+    }
+
+    .chat-header {
+      display: grid;
+      grid-template-columns: 42px 1fr 42px;
+      align-items: center;
+      gap: 8px;
+      min-height: 50px;
+    }
+
+    .chat-title {
+      text-align: center;
+      font-size: 17px;
+      font-weight: 1000;
+    }
+
+    .chat-banner {
+      margin: 10px 8px 18px;
+      padding: 12px 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.64);
+      color: #766a5a;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .moment-flow {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: calc(92px + env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 0 6px;
+      transition: bottom 420ms ease;
+      pointer-events: none;
+    }
+
+    .chat-screen.question-shown .moment-flow {
+      bottom: calc(228px + env(safe-area-inset-bottom));
+    }
+
+    .moment-bubble {
+      align-self: center;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      width: min(82%, 290px);
+      min-height: 54px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #fff 0%, #fffdf5 42%, #ffe07a 100%);
+      color: #251f19;
+      font-size: 27px;
+      text-align: center;
+      box-shadow: 0 8px 18px rgba(92, 80, 62, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.72);
+      opacity: 0;
+      transform: translateY(32px) scale(0.96);
+      animation: bubble-rise 520ms cubic-bezier(0.16, 0.88, 0.26, 1.18) forwards;
+    }
+
+    .moment-bubble.mine {
+      align-self: center;
+    }
+
+    .moment-bubble.final {
+      align-self: center;
+      background: linear-gradient(90deg, #fff 0%, #fff4f6 44%, #ffd4dd 100%);
+      color: #e8485f;
+    }
+
+    .final-question {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: calc(14px + env(safe-area-inset-bottom));
+      display: none;
+      padding: 18px;
+      border-radius: 28px;
+      background: rgba(255, 248, 234, 0.96);
+      box-shadow: 0 16px 34px rgba(92, 80, 62, 0.12);
+      text-align: center;
+      z-index: 2;
+    }
+
+    .final-question.is-visible {
+      display: block;
+      animation: soft-enter 420ms ease forwards;
+    }
+
+    .final-question p {
+      margin: 0 0 14px;
+      font-size: 20px;
+      line-height: 1.28;
+      font-weight: 1000;
+    }
+
+    .chat-choice-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .chat-choice {
+      min-height: 50px;
+      border: 0;
+      border-radius: 999px;
+      color: #28221c;
+      font-weight: 1000;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .chat-choice.yes {
+      background: #ffd84d;
+    }
+
+    .chat-choice.no {
+      background: #fff;
+    }
+
+    .fake-input {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: calc(14px + env(safe-area-inset-bottom));
+      display: flex;
+      align-items: center;
+      min-height: 52px;
+      padding: 0 18px;
+      border-radius: 999px;
+      background: #fff;
+      color: #b2a897;
+      font-size: 15px;
+      box-shadow: 0 10px 22px rgba(92, 80, 62, 0.08);
+      transition: opacity 220ms ease, transform 220ms ease;
+      z-index: 1;
+    }
+
+    .fake-input.is-hidden {
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+    }
+
+    .success-screen {
+      justify-content: center;
+      background:
+        radial-gradient(circle at 14% 18%, rgba(255, 216, 77, 0.22) 0 18px, transparent 19px),
+        radial-gradient(circle at 82% 80%, rgba(168, 117, 219, 0.14) 0 18px, transparent 19px),
+        #fff8ea;
+      background-size: 112px 112px;
+      text-align: center;
+    }
+
+    .success-card {
+      display: grid;
+      justify-items: center;
+      gap: 18px;
+    }
+
+    .success-card h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.14;
+    }
+
+    .success-card p {
+      margin: 0;
+      color: #40382d;
+      font-size: 17px;
+      line-height: 1.75;
+      font-weight: 700;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(28px + env(safe-area-inset-bottom));
+      z-index: 700;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: #2f2640;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 900;
+      opacity: 0;
+      transform: translate(-50%, 18px);
+      pointer-events: none;
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
+    .toast.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @keyframes clear-sticker-pop {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(var(--r)) scale(0.24);
+      }
+      34% {
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(var(--r)) scale(1.24);
+      }
+      62% {
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(var(--r)) scale(0.88);
+      }
+      100% {
+        opacity: 0.9;
+        transform: translate(-50%, -50%) rotate(var(--r)) scale(1);
+      }
+    }
+
+    @keyframes float-join-left {
+      0%,
+      100% { transform: translateX(-8px) translateY(0) rotate(-5deg); }
+      50% { transform: translateX(6px) translateY(-8px) rotate(4deg); }
+    }
+
+    @keyframes float-join-right {
+      0%,
+      100% { transform: translateX(8px) translateY(0) rotate(8deg); }
+      50% { transform: translateX(-6px) translateY(-8px) rotate(-4deg); }
+    }
+
+    @keyframes app-bob {
+      0%,
+      100% { transform: translateY(0) rotate(-8deg); }
+      50% { transform: translateY(-8px) rotate(8deg); }
+    }
+
+    @keyframes reuleaux-spark {
+      0%,
+      100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 12px 16px rgba(67, 46, 85, 0.12)); }
+      45% { transform: scale(1.18) rotate(12deg); filter: drop-shadow(0 0 18px rgba(255, 216, 77, 0.9)); }
+    }
+
+    @keyframes bubble-rise {
+      0% {
+        opacity: 0;
+        transform: translateY(32px) scale(0.96);
+      }
+      72% {
+        opacity: 1;
+        transform: translateY(-4px) scale(1.02);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes soft-enter {
+      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
     @media (max-width: 640px) {
       .stage {
         min-height: 620px;
@@ -779,15 +1629,155 @@
     <div class="celebration" id="celebration" aria-hidden="true"></div>
 
     <section class="question-panel" id="questionPanel" aria-hidden="true">
-      <div class="question-inner">
-        <h2>우리, 한번 만나볼까요?</h2>
-        <div class="choices">
-          <button class="choice yes" id="yesButton" type="button">네</button>
-          <button class="choice no" id="noButton" type="button">아니요</button>
-        </div>
+      <div class="stage-clear">
+        <h2>스테이지<br />클리어!</h2>
+        <p>모든 스티커를 떼어냈어요.<br />이제 다음 단계로 넘어갈 시간이에요.</p>
+        <button class="center-next" id="nextStepButton" type="button">다음 단계</button>
       </div>
     </section>
   </main>
+
+  <main class="mobile-app" id="mobileApp" aria-hidden="true">
+    <section class="app-screen splash-screen" data-screen="splash">
+      <div class="symbol-row" aria-hidden="true">
+        <span class="ditto-symbol"></span>
+        <span class="reuleaux-symbol"></span>
+      </div>
+      <div class="brand-logo" aria-label="Ditto and Reuleaux">
+        <span class="ditto-word">Ditto</span>
+        <span class="amp">&amp;</span>
+        <span class="reuleaux-word">Reuleaux</span>
+      </div>
+    </section>
+
+    <section class="app-screen" data-screen="onboarding">
+      <div class="app-illustration" aria-hidden="true">
+        <span class="line-person left"></span>
+        <span class="line-person right"></span>
+        <span class="doodle">♡</span>
+        <span class="doodle">✦</span>
+        <span class="doodle">···</span>
+      </div>
+      <h1 class="screen-title">랜덤 AI 소개팅앱<br /><span class="highlight">Ditto &amp; Reuleaux</span></h1>
+      <p class="screen-copy">취향, 대화, 우연을 분석해서<br />오늘의 특별한 인연을 찾아드려요.</p>
+      <div class="app-footer">
+        <div class="dots" aria-label="온보딩 페이지">
+          <button class="active" type="button" data-onboarding-dot="onboarding" aria-label="첫 번째 안내"></button>
+          <button type="button" data-onboarding-dot="nickname" aria-label="두 번째 안내"></button>
+        </div>
+        <button class="app-button" type="button" data-go="nickname">시작하기</button>
+      </div>
+    </section>
+
+    <section class="app-screen" data-screen="nickname">
+      <h1 class="screen-title">본인의 닉네임을<br />입력해주세요</h1>
+      <div class="nickname-wrap">
+        <input class="nickname-input" id="nicknameInput" type="text" placeholder="닉네임 입력" autocomplete="off" />
+        <p class="input-hint" id="nicknameHint"></p>
+      </div>
+      <span class="reuleaux-symbol nickname-symbol" id="nicknameSymbol" aria-hidden="true"></span>
+      <div class="app-footer">
+        <div class="dots" aria-label="온보딩 페이지">
+          <button type="button" data-onboarding-dot="onboarding" aria-label="첫 번째 안내"></button>
+          <button class="active" type="button" data-onboarding-dot="nickname" aria-label="두 번째 안내"></button>
+        </div>
+        <button class="app-button" id="matchingStartButton" type="button">매칭 시작하기</button>
+      </div>
+    </section>
+
+    <section class="app-screen match-screen" data-screen="match">
+      <header class="app-header">
+        <button class="icon-button" type="button" aria-label="메뉴">☰</button>
+        <span>Ditto 와의 대화</span>
+        <button class="icon-button" type="button" aria-label="알림">◦</button>
+      </header>
+      <div class="match-notice">
+        <span aria-hidden="true">📣</span>
+        <span>연애, 고민, 일상 무엇이든 디또와 이야기해보세요!</span>
+      </div>
+      <div class="date-chip">오늘의 AI 매칭</div>
+      <div class="locked-profile">새 프로필이 도착했어요</div>
+      <div class="match-chat">
+        <div class="match-speaker">
+          <div class="match-avatar" aria-hidden="true"><span class="ditto-symbol"></span></div>
+          <div class="match-name">Ditto</div>
+          <div class="match-bubbles">
+            <div class="match-bubble">모동님! 오늘 진짜 매칭 기운이 너한테 다 몰렸나 봐. 방금 또 한 명의 특별한 프로필이 도착했어. 🎉</div>
+            <div class="match-bubble">이번에 소개할 상대는 4개국어를 구사하는 열정있는 기획자야.</div>
+            <div class="match-bubble">조용히 오래 좋아하는 타입이고, 음식과 영화와 꼬리에 꼬리를 무는 어디로 튈지 모르는 이야기를 오래 나눌 수 있는 사람이래. 지금 바로 확인해볼래?</div>
+          </div>
+        </div>
+      </div>
+      <div class="match-cta">
+        <button class="app-button" type="button" data-go="profile">매칭 상대 보러가기</button>
+      </div>
+    </section>
+
+    <section class="app-screen scrollable" data-screen="profile">
+      <header class="app-header">
+        <button class="icon-button" type="button" aria-label="뒤로가기">‹</button>
+        <span>매칭된 인연</span>
+        <span></span>
+      </header>
+      <article class="profile-hero">
+        <div class="profile-avatar" aria-hidden="true"><span class="ditto-symbol"></span></div>
+        <h2>생각하는메타몽을<br />소개합니다.</h2>
+        <span class="badge">AI 매칭 완료</span>
+      </article>
+      <section class="info-section">
+        <h3>생각하는메타몽의 기본정보</h3>
+        <div class="info-list">
+          <div class="info-row"><span>닉네임</span><span>생각하는메타몽</span></div>
+          <div class="info-row"><span>출생연도</span><span>1996</span></div>
+          <div class="info-row"><span>활동지역</span><span>서울특별시 동작구</span></div>
+          <div class="info-row"><span>성격유형</span><span>INTP</span></div>
+          <div class="info-row"><span>직업</span><span>게임 기획자</span></div>
+          <div class="info-row"><span>언어</span><span>한국어 / 영어 / 일본어 / 중국어</span></div>
+          <div class="info-row"><span>취미</span><span>컨텐츠 소모, 맛있는거 먹기, 다양한 경험하기</span></div>
+          <div class="info-row"><span>성향</span><span>조용히 오래 좋아하는 타입</span></div>
+          <div class="info-row"><span>매칭 신뢰도</span><span>매우 높음</span></div>
+          <div class="info-row"><span>대화 온도</span><span>따땃함(아마도)</span></div>
+          <div class="info-row"><span>관심사</span><span>음식, 술, 영화, 모동, 클라이밍</span></div>
+        </div>
+      </section>
+      <div class="profile-cta">
+        <button class="app-button" type="button" data-go="chat">메시지 보내기</button>
+      </div>
+    </section>
+
+    <section class="app-screen chat-screen" data-screen="chat">
+      <header class="chat-header">
+        <button class="icon-button" type="button" aria-label="뒤로가기">‹</button>
+        <span class="chat-title">생각하는메타몽과 대화</span>
+        <button class="icon-button" type="button" aria-label="알림">○</button>
+      </header>
+      <div class="chat-banner">디또가 두 사람의 순간을 불러오고 있어요.</div>
+      <div class="moment-flow" id="momentFlow" aria-label="함께한 순간들"></div>
+      <div class="final-question" id="chatQuestion">
+        <div class="chat-choice-row">
+          <button class="chat-choice yes" id="chatYesButton" type="button">예</button>
+          <button class="chat-choice no" id="chatNoButton" type="button">아니오</button>
+        </div>
+      </div>
+      <div class="fake-input">메시지를 입력하세요</div>
+    </section>
+
+    <section class="app-screen success-screen" data-screen="success">
+      <article class="success-card">
+        <div class="symbol-pair" aria-hidden="true">
+          <span class="ditto-symbol"></span>
+          <span class="mini-heart">♥</span>
+          <span class="reuleaux-symbol"></span>
+        </div>
+        <h1>매칭이 성사됐어요</h1>
+        <p>Ditto와 Reuleaux의 이야기가<br />이제 진짜로 시작됩니다.</p>
+        <p>민경님,<br />나는 너랑 함께하는 시간이, 대화가, 경험이 좋고,<br />앞으로도 더 많은 순간을 같이 쌓아가고 싶어요.</p>
+        <p>우리, 조금 더 특별한 사이가 되어봐요.</p>
+        <button class="app-button" id="savePageButton" type="button">우리의 첫 페이지 저장하기</button>
+      </article>
+    </section>
+  </main>
+  <div class="toast" id="toast">저장되었습니다</div>
 
   <script>
     const totalStickerGoal = 31;
@@ -829,14 +1819,29 @@
     const panel = document.getElementById("questionPanel");
     const stage = document.getElementById("stage");
     const waterScreen = document.getElementById("waterScreen");
-    const noButton = document.getElementById("noButton");
-    const yesButton = document.getElementById("yesButton");
     const celebration = document.getElementById("celebration");
+    const nextStepButton = document.getElementById("nextStepButton");
+    const mobileApp = document.getElementById("mobileApp");
+    const appScreens = Array.from(document.querySelectorAll(".app-screen"));
+    const nicknameInput = document.getElementById("nicknameInput");
+    const nicknameHint = document.getElementById("nicknameHint");
+    const nicknameSymbol = document.getElementById("nicknameSymbol");
+    const matchingStartButton = document.getElementById("matchingStartButton");
+    const momentFlow = document.getElementById("momentFlow");
+    const chatQuestion = document.getElementById("chatQuestion");
+    const fakeInput = document.querySelector(".fake-input");
+    const chatYesButton = document.getElementById("chatYesButton");
+    const chatNoButton = document.getElementById("chatNoButton");
+    const savePageButton = document.getElementById("savePageButton");
+    const toast = document.getElementById("toast");
     let removed = 0;
     let audioContext;
     let waterTimer;
     let lastWaterEffectAt = 0;
     let lastWaterSoundAt = 0;
+    let splashTimer;
+    let momentsStarted = false;
+    let onboardingTouchStartX = 0;
 
     function getAudioContext() {
       audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
@@ -931,7 +1936,7 @@
       const button = document.createElement("button");
       button.className = "ditto";
       button.type = "button";
-      button.setAttribute("aria-label", `표정 ${index + 1} 메타몽 보내기`);
+      button.setAttribute("aria-label", `스티커 ${index + 1} 떼기`);
       button.style.setProperty("--x", item.x);
       button.style.setProperty("--y", item.y);
       button.style.setProperty("--size", item.size);
@@ -1057,8 +2062,7 @@
     function removeRealPokemonIfPresent() {
       const realPokemon = document.querySelector(".real-pokemon");
       if (!realPokemon) return;
-      realPokemon.classList.add("is-popped");
-      setTimeout(() => realPokemon.remove(), 560);
+      realPokemon.remove();
     }
 
     function showQuestion() {
@@ -1066,7 +2070,8 @@
       stage.classList.add("final");
       panel.classList.add("is-visible");
       panel.setAttribute("aria-hidden", "false");
-      yesButton.focus();
+      createStageClearStickers();
+      nextStepButton.focus();
     }
 
     function scatterSparkles() {
@@ -1081,56 +2086,119 @@
       }
     }
 
-    function celebrate() {
-      playYesSound();
-      yesButton.textContent = "좋아요";
-      yesButton.disabled = true;
-      noButton.remove();
+    function createStageClearStickers() {
       celebration.innerHTML = "";
-
-      dittos.forEach((item, index) => {
-        const petal = document.createElement("span");
-        petal.className = `petal ${index % 2 === 0 ? "heart" : "rose"}`;
-        petal.style.setProperty("--x", item.x);
-        petal.style.setProperty("--y", item.y);
-        petal.style.setProperty("--s", `${42 + (index % 5) * 9}px`);
-        petal.style.setProperty("--r", `${index * 28 - 70}deg`);
-        petal.style.setProperty("--d", `${index * 0.055}s`);
-        petal.style.setProperty("--tx", `${Math.cos(index) * 24}px`);
-        petal.style.setProperty("--ty", `${Math.sin(index * 1.4) * 24}px`);
-        celebration.appendChild(petal);
+      [...dittos, {
+        x: "50%",
+        y: "16%",
+        size: "34vw",
+        rot: "-8deg",
+        src: "public/assets/stickers/ditto/132.png"
+      }].forEach((item, index) => {
+        const sticker = document.createElement("img");
+        sticker.className = "clear-sticker";
+        sticker.src = item.src;
+        sticker.alt = "";
+        sticker.draggable = false;
+        sticker.style.setProperty("--x", item.x);
+        sticker.style.setProperty("--y", item.y);
+        sticker.style.setProperty("--s", item.size);
+        sticker.style.setProperty("--r", item.rot);
+        sticker.style.setProperty("--d", `${(index % 12) * 0.045}s`);
+        celebration.appendChild(sticker);
       });
     }
 
-    function getEscapeVector() {
-      const noRect = noButton.getBoundingClientRect();
-      const yesRect = yesButton.getBoundingClientRect();
-      const toYesX = (yesRect.left + yesRect.width / 2) - (noRect.left + noRect.width / 2);
-      const toYesY = (yesRect.top + yesRect.height / 2) - (noRect.top + noRect.height / 2);
-      const toYesLength = Math.hypot(toYesX, toYesY) || 1;
-      const yesUnitX = toYesX / toYesLength;
-      const yesUnitY = toYesY / toYesLength;
-      const distance = Math.max(window.innerWidth, window.innerHeight) * 1.18;
+    function showAppScreen(name) {
+      appScreens.forEach((screen) => {
+        const isActive = screen.dataset.screen === name;
+        screen.classList.toggle("is-active", isActive);
+      });
 
-      for (let attempt = 0; attempt < 24; attempt += 1) {
-        const angle = Math.random() * Math.PI * 2;
-        const dx = Math.cos(angle);
-        const dy = Math.sin(angle);
-        const pointsTowardYes = dx * yesUnitX + dy * yesUnitY > 0.28;
-        if (!pointsTowardYes) {
-          return { dx: dx * distance, dy: dy * distance };
-        }
+      if (name === "chat") {
+        startMomentFlow();
       }
-
-      return { dx: -yesUnitY * distance, dy: yesUnitX * distance };
     }
 
-    function spawnCrawlingDitto() {
-      const stageRect = stage.getBoundingClientRect();
-      const noRect = noButton.getBoundingClientRect();
-      const startX = noRect.left + noRect.width / 2 - stageRect.left;
-      const startY = noRect.top + noRect.height / 2 - stageRect.top;
-      const vector = getEscapeVector();
+    function startMobileApp() {
+      clearTimeout(splashTimer);
+      stage.classList.add("is-hidden");
+      mobileApp.classList.add("is-visible");
+      mobileApp.setAttribute("aria-hidden", "false");
+      showAppScreen("splash");
+      splashTimer = setTimeout(() => showAppScreen("onboarding"), 2000);
+    }
+
+    function submitNickname() {
+      const nickname = nicknameInput.value.trim();
+      if (nickname !== "모동") {
+        nicknameHint.textContent = "이미 사용중인 닉네임입니다.";
+        nicknameInput.setAttribute("aria-invalid", "true");
+        return;
+      }
+
+      nicknameHint.textContent = "";
+      nicknameInput.setAttribute("aria-invalid", "false");
+      nicknameSymbol.classList.remove("is-sparkling");
+      void nicknameSymbol.offsetWidth;
+      nicknameSymbol.classList.add("is-sparkling");
+      setTimeout(() => showAppScreen("match"), 520);
+    }
+
+    function startMomentFlow() {
+      if (momentsStarted) return;
+      momentsStarted = true;
+      momentFlow.innerHTML = "";
+      document.querySelector(".chat-screen").classList.remove("question-shown");
+      chatQuestion.classList.remove("is-visible");
+      fakeInput.classList.remove("is-hidden");
+
+      const moments = [
+        { icon: "🐟" },
+        { icon: "🍺" },
+        { icon: "🍜" },
+        { icon: "🥃🌿" },
+        { icon: "🍷" },
+        { icon: "🍶 zzz" },
+        { icon: "🥩🧀🍜" },
+        { icon: "🍿🎬" },
+        { icon: "❤️ ❤️ ?", final: true }
+      ];
+
+      const bubbleDelay = 1500;
+      moments.forEach((moment, index) => {
+        setTimeout(() => {
+          const bubble = document.createElement("div");
+          bubble.className = `moment-bubble ${moment.final ? "final" : ""}`;
+          bubble.textContent = moment.icon;
+          momentFlow.appendChild(bubble);
+        }, index * bubbleDelay);
+      });
+
+      setTimeout(() => {
+        fakeInput.classList.add("is-hidden");
+        chatQuestion.classList.add("is-visible");
+        document.querySelector(".chat-screen").classList.add("question-shown");
+      }, moments.length * bubbleDelay + 760);
+    }
+
+    function showToast() {
+      toast.classList.add("is-visible");
+      setTimeout(() => toast.classList.remove("is-visible"), 1500);
+    }
+
+    function getEscapeVector(sourceButton, avoidButton) {
+      const distance = Math.max(window.innerWidth, window.innerHeight) * 1.18;
+      const angle = Math.random() * Math.PI * 2;
+      return { dx: Math.cos(angle) * distance, dy: Math.sin(angle) * distance };
+    }
+
+    function spawnCrawlingDitto(sourceButton, avoidButton, host = mobileApp) {
+      const hostRect = host.getBoundingClientRect();
+      const noRect = sourceButton.getBoundingClientRect();
+      const startX = noRect.left + noRect.width / 2 - hostRect.left;
+      const startY = noRect.top + noRect.height / 2 - hostRect.top;
+      const vector = getEscapeVector(sourceButton, avoidButton);
       const runner = document.createElement("div");
       runner.className = "crawl-runner";
       runner.style.setProperty("--start-x", `${startX}px`);
@@ -1142,16 +2210,44 @@
         <img class="crawl-sprite mid" src="public/assets/crawl-sprite/slime-mid.png" alt="" draggable="false" />
         <img class="crawl-sprite pressed" src="public/assets/crawl-sprite/slime-pressed.png" alt="" draggable="false" />
       `;
-      stage.appendChild(runner);
+      host.appendChild(runner);
       setTimeout(() => runner.remove(), 5450);
     }
 
-    noButton.addEventListener("click", () => {
-      playDittoSound();
-      spawnCrawlingDitto();
+    nextStepButton.addEventListener("click", startMobileApp);
+    matchingStartButton.addEventListener("click", submitNickname);
+    document.querySelectorAll("[data-onboarding-dot]").forEach((dot) => {
+      dot.addEventListener("click", () => showAppScreen(dot.dataset.onboardingDot));
     });
-
-    yesButton.addEventListener("click", celebrate);
+    mobileApp.addEventListener("touchstart", (event) => {
+      onboardingTouchStartX = event.touches[0]?.clientX || 0;
+    }, { passive: true });
+    mobileApp.addEventListener("touchend", (event) => {
+      const active = document.querySelector(".app-screen.is-active")?.dataset.screen;
+      if (active !== "onboarding" && active !== "nickname") return;
+      const endX = event.changedTouches[0]?.clientX || 0;
+      const deltaX = endX - onboardingTouchStartX;
+      if (Math.abs(deltaX) < 48) return;
+      if (deltaX < 0 && active === "onboarding") showAppScreen("nickname");
+      if (deltaX > 0 && active === "nickname") showAppScreen("onboarding");
+    }, { passive: true });
+    nicknameInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        submitNickname();
+      }
+    });
+    document.querySelectorAll("[data-go]").forEach((button) => {
+      button.addEventListener("click", () => showAppScreen(button.dataset.go));
+    });
+    chatNoButton.addEventListener("click", () => {
+      playDittoSound();
+      spawnCrawlingDitto(chatNoButton, chatYesButton);
+    });
+    chatYesButton.addEventListener("click", () => {
+      playYesSound();
+      showAppScreen("success");
+    });
+    savePageButton.addEventListener("click", showToast);
     progressSticker.addEventListener("click", removeProgressSticker);
     document.addEventListener("dblclick", (event) => event.preventDefault(), { passive: false });
 
