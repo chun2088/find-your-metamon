@@ -102,6 +102,10 @@
       pointer-events: auto;
     }
 
+    .progress.is-wrong-tap {
+      animation: wrong-counter-tap 360ms ease;
+    }
+
     .progress-dot {
       display: inline-block;
       width: 28px;
@@ -630,6 +634,33 @@
       }
     }
 
+    @keyframes wrong-counter-tap {
+      0%,
+      100% {
+        transform: translateX(0);
+        border-color: rgba(184, 136, 244, 0.26);
+        background: rgba(255, 255, 255, 0.62);
+        box-shadow: 0 12px 32px rgba(88, 57, 119, 0.08);
+      }
+      18% {
+        transform: translateX(-5px) rotate(-1deg);
+        border-color: rgba(239, 63, 107, 0.58);
+        background: rgba(255, 105, 135, 0.28);
+        box-shadow: 0 12px 32px rgba(239, 63, 107, 0.22);
+      }
+      36% {
+        transform: translateX(5px) rotate(1deg);
+        border-color: rgba(239, 63, 107, 0.64);
+        background: rgba(255, 105, 135, 0.34);
+      }
+      58% {
+        transform: translateX(-3px) rotate(-0.6deg);
+      }
+      78% {
+        transform: translateX(2px) rotate(0.4deg);
+      }
+    }
+
     @keyframes crawl-runner-away {
       0% {
         opacity: 1;
@@ -791,6 +822,7 @@
 
     const field = document.getElementById("dittoField");
     const progressSticker = document.getElementById("progressSticker");
+    const progress = document.querySelector(".progress");
     const counter = document.getElementById("counter");
     const panel = document.getElementById("questionPanel");
     const stage = document.getElementById("stage");
@@ -955,7 +987,8 @@
       if (button.classList.contains("is-popped")) return;
       const splashes = Number(button.dataset.splashes || "0") + 1;
       button.dataset.splashes = `${splashes}`;
-      const isFinalSplash = splashes >= 5;
+      const isFinalSplash = splashes >= 100;
+      warnCounterWrongTap();
       playWaterSplashSound();
       button.classList.remove("is-splashing");
       void button.offsetWidth;
@@ -987,6 +1020,12 @@
       if (isFinalSplash) {
         setTimeout(() => button.remove(), 560);
       }
+    }
+
+    function warnCounterWrongTap() {
+      progress.classList.remove("is-wrong-tap");
+      void progress.offsetWidth;
+      progress.classList.add("is-wrong-tap");
     }
 
     function maybeShowQuestion() {
