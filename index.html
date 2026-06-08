@@ -1076,18 +1076,8 @@
     }
 
     .match-screen {
-      background: linear-gradient(#ffd84d 0 48%, #fff8ea 48% 100%);
-    }
-
-    .heart-pattern {
-      position: absolute;
-      inset: 0 0 45%;
-      opacity: 0.32;
-      background-image:
-        radial-gradient(circle at 25% 30%, rgba(255, 255, 255, 0.68) 0 9px, transparent 10px),
-        radial-gradient(circle at 75% 70%, rgba(255, 255, 255, 0.5) 0 11px, transparent 12px);
-      background-size: 86px 86px;
-      pointer-events: none;
+      background: #edeade;
+      padding: 16px 18px calc(82px + env(safe-area-inset-bottom));
     }
 
     .app-header {
@@ -1113,15 +1103,111 @@
       font-size: 18px;
     }
 
-    .match-card {
+    .match-notice {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 14px 2px 16px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: #fff;
+      font-size: 15px;
+      font-weight: 1000;
+      line-height: 1.38;
+      box-shadow: 0 10px 22px rgba(92, 80, 62, 0.12);
+    }
+
+    .date-chip {
+      align-self: center;
+      margin: 2px auto 14px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: #d9d8d2;
+      color: #4b4842;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .locked-profile {
       position: relative;
-      z-index: 1;
-      margin-top: 58px;
-      padding: 30px 24px;
-      border-radius: 30px;
-      background: rgba(255, 255, 255, 0.94);
-      box-shadow: 0 22px 42px rgba(109, 76, 10, 0.14);
+      display: grid;
+      place-items: center;
+      min-height: 118px;
+      margin: 0 42px 18px;
+      border-radius: 24px;
+      overflow: hidden;
+      background:
+        linear-gradient(rgba(78, 71, 46, 0.58), rgba(78, 71, 46, 0.58)),
+        radial-gradient(circle at 26% 34%, rgba(255, 216, 77, 0.75), transparent 24%),
+        radial-gradient(circle at 68% 30%, rgba(168, 117, 219, 0.7), transparent 21%),
+        linear-gradient(135deg, #bcb08d, #807a6e);
+      color: #fff;
+      font-size: 21px;
+      font-weight: 1000;
       text-align: center;
+      box-shadow: inset 0 0 34px rgba(0, 0, 0, 0.14);
+    }
+
+    .locked-profile::before {
+      content: "▣";
+      display: block;
+      margin-bottom: 10px;
+      font-size: 31px;
+      line-height: 1;
+    }
+
+    .match-chat {
+      display: grid;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .match-speaker {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      column-gap: 10px;
+      align-items: end;
+    }
+
+    .match-avatar {
+      grid-row: 1 / span 2;
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 5px 12px rgba(92, 80, 62, 0.08);
+    }
+
+    .match-avatar .ditto-symbol {
+      width: 32px;
+      height: 30px;
+      animation: none;
+    }
+
+    .match-name {
+      color: #6e695f;
+      font-size: 15px;
+      font-weight: 1000;
+    }
+
+    .match-bubbles {
+      display: grid;
+      gap: 8px;
+      grid-column: 2;
+      margin-top: 8px;
+    }
+
+    .match-bubble {
+      padding: 13px 16px;
+      border-radius: 22px 22px 22px 6px;
+      background: #fff;
+      color: #1f1d1a;
+      font-size: 15px;
+      line-height: 1.5;
+      font-weight: 800;
+      box-shadow: 0 8px 18px rgba(92, 80, 62, 0.07);
     }
 
     .symbol-pair {
@@ -1137,11 +1223,11 @@
       font-weight: 1000;
     }
 
-    .match-card p {
-      margin: 0;
-      font-size: 20px;
-      line-height: 1.62;
-      font-weight: 800;
+    .match-cta {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: calc(18px + env(safe-area-inset-bottom));
     }
 
     .sticky-cta {
@@ -1595,21 +1681,29 @@
     </section>
 
     <section class="app-screen match-screen" data-screen="match">
-      <div class="heart-pattern" aria-hidden="true"></div>
       <header class="app-header">
-        <span></span>
+        <button class="icon-button" type="button" aria-label="메뉴">☰</button>
         <span>Ditto 와의 대화</span>
-        <span></span>
+        <button class="icon-button" type="button" aria-label="알림">◦</button>
       </header>
-      <article class="match-card">
-        <div class="symbol-pair" aria-hidden="true">
-          <span class="ditto-symbol"></span>
-          <span class="mini-heart">♥</span>
-          <span class="reuleaux-symbol"></span>
+      <div class="match-notice">
+        <span aria-hidden="true">📣</span>
+        <span>연애, 고민, 일상 무엇이든 디또와 이야기해보세요!</span>
+      </div>
+      <div class="date-chip">오늘의 AI 매칭</div>
+      <div class="locked-profile">새 프로필이 도착했어요</div>
+      <div class="match-chat">
+        <div class="match-speaker">
+          <div class="match-avatar" aria-hidden="true"><span class="ditto-symbol"></span></div>
+          <div class="match-name">Ditto</div>
+          <div class="match-bubbles">
+            <div class="match-bubble">모동님! 오늘 진짜 매칭 기운이 너한테 다 몰렸나 봐. 방금 또 한 명의 특별한 프로필이 도착했어. 🎉</div>
+            <div class="match-bubble">이번에 소개할 상대는 4개국어를 구사하는 열정있는 기획자야.</div>
+            <div class="match-bubble">조용히 오래 좋아하는 타입이고, 음식과 영화와 산책 이야기를 오래 나눌 수 있는 사람이래. 지금 바로 확인해볼래?</div>
+          </div>
         </div>
-        <p>안녕하세요, 디또에요!<br /><br />오늘의 모동님 매칭시간이<br />돌아왔어요.<br /><br />4개국어를 구사하는<br />열정있는 기획자인<br />매칭 상대를 보러갈까요?</p>
-      </article>
-      <div class="sticky-cta">
+      </div>
+      <div class="match-cta">
         <button class="app-button" type="button" data-go="profile">매칭 상대 보러가기</button>
       </div>
     </section>
@@ -2091,7 +2185,8 @@
       if (!chatScreen) return;
       const inputReserve = 118;
       const overflow = Math.max(0, momentFlow.scrollHeight - (chatScreen.clientHeight - momentFlow.offsetTop - inputReserve));
-      momentFlow.style.transform = `translateY(-${overflow}px)`;
+      const maxLift = Math.min(overflow, 260);
+      momentFlow.style.transform = `translateY(-${maxLift}px)`;
     }
 
     function showToast() {
