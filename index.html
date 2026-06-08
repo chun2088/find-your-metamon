@@ -1004,14 +1004,17 @@
       gap: 8px;
     }
 
-    .dots span {
+    .dots button {
       width: 8px;
       height: 8px;
+      border: 0;
+      padding: 0;
       border-radius: 50%;
       background: #d6c9b5;
+      cursor: pointer;
     }
 
-    .dots span.active {
+    .dots button.active {
       width: 22px;
       border-radius: 999px;
       background: #ffd84d;
@@ -1224,7 +1227,7 @@
     .chat-screen {
       background: #edeade;
       padding: 14px 14px calc(16px + env(safe-area-inset-bottom));
-      overflow-y: auto;
+      overflow: hidden;
     }
 
     .chat-header {
@@ -1265,6 +1268,7 @@
       flex-direction: column;
       gap: 10px;
       padding: 0 6px 124px;
+      transition: transform 520ms ease;
     }
 
     .moment-bubble {
@@ -1292,9 +1296,10 @@
     }
 
     .moment-bubble.final {
-      align-self: center;
+      align-self: flex-start;
       border-radius: 24px;
       background: #fff;
+      color: #e8485f;
     }
 
     .final-question {
@@ -1565,7 +1570,10 @@
       <h1 class="screen-title">랜덤 AI 소개팅앱<br /><span class="highlight">Ditto &amp; Reuleaux</span></h1>
       <p class="screen-copy">취향, 대화, 우연을 분석해서<br />오늘의 특별한 인연을 찾아드려요.</p>
       <div class="app-footer">
-        <div class="dots" aria-hidden="true"><span class="active"></span><span></span></div>
+        <div class="dots" aria-label="온보딩 페이지">
+          <button class="active" type="button" data-onboarding-dot="onboarding" aria-label="첫 번째 안내"></button>
+          <button type="button" data-onboarding-dot="nickname" aria-label="두 번째 안내"></button>
+        </div>
         <button class="app-button" type="button" data-go="nickname">시작하기</button>
       </div>
     </section>
@@ -1578,7 +1586,10 @@
       </div>
       <span class="reuleaux-symbol nickname-symbol" id="nicknameSymbol" aria-hidden="true"></span>
       <div class="app-footer">
-        <div class="dots" aria-hidden="true"><span></span><span class="active"></span></div>
+        <div class="dots" aria-label="온보딩 페이지">
+          <button type="button" data-onboarding-dot="onboarding" aria-label="첫 번째 안내"></button>
+          <button class="active" type="button" data-onboarding-dot="nickname" aria-label="두 번째 안내"></button>
+        </div>
         <button class="app-button" id="matchingStartButton" type="button">매칭 시작하기</button>
       </div>
     </section>
@@ -1733,6 +1744,7 @@
     let lastWaterSoundAt = 0;
     let splashTimer;
     let momentsStarted = false;
+    let onboardingTouchStartX = 0;
 
     function getAudioContext() {
       audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
@@ -2040,6 +2052,7 @@
       if (momentsStarted) return;
       momentsStarted = true;
       momentFlow.innerHTML = "";
+      momentFlow.style.transform = "translateY(0)";
       chatQuestion.classList.remove("is-visible");
       fakeInput.classList.remove("is-hidden");
 
@@ -2052,24 +2065,33 @@
         { icon: "🍶 zzz", mine: true },
         { icon: "🧀🍜", mine: false },
         { icon: "🎬", mine: true },
-        { icon: "♥ 🤝 ?", mine: false, final: true }
+        { icon: "❤️ 🤝 ?", mine: false, final: true }
       ];
 
+      const bubbleDelay = 1500;
       moments.forEach((moment, index) => {
         const bubble = document.createElement("div");
         bubble.className = `moment-bubble ${moment.mine ? "mine" : ""} ${moment.final ? "final" : ""}`;
         bubble.textContent = moment.icon;
-        bubble.style.setProperty("--delay", `${index * 0.7}s`);
+        bubble.style.setProperty("--delay", `${index * (bubbleDelay / 1000)}s`);
         momentFlow.appendChild(bubble);
         setTimeout(() => {
-          bubble.scrollIntoView({ block: "nearest", behavior: "smooth" });
-        }, index * 700 + 120);
+          pushMomentFlowUp();
+        }, index * bubbleDelay + 260);
       });
 
       setTimeout(() => {
         fakeInput.classList.add("is-hidden");
         chatQuestion.classList.add("is-visible");
-      }, moments.length * 700 + 620);
+      }, moments.length * bubbleDelay + 760);
+    }
+
+    function pushMomentFlowUp() {
+      const chatScreen = document.querySelector(".chat-screen.is-active");
+      if (!chatScreen) return;
+      const inputReserve = 118;
+      const overflow = Math.max(0, momentFlow.scrollHeight - (chatScreen.clientHeight - momentFlow.offsetTop - inputReserve));
+      momentFlow.style.transform = `translateY(-${overflow}px)`;
     }
 
     function showToast() {
@@ -2123,6 +2145,21 @@
 
     nextStepButton.addEventListener("click", startMobileApp);
     matchingStartButton.addEventListener("click", submitNickname);
+    document.querySelectorAll("[data-onboarding-dot]").forEach((dot) => {
+      dot.addEventListener("click", () => showAppScreen(dot.dataset.onboardingDot));
+    });
+    mobileApp.addEventListener("touchstart", (event) => {
+      onboardingTouchStartX = event.touches[0]?.clientX || 0;
+    }, { passive: true });
+    mobileApp.addEventListener("touchend", (event) => {
+      const active = document.querySelector(".app-screen.is-active")?.dataset.screen;
+      if (active !== "onboarding" && active !== "nickname") return;
+      const endX = event.changedTouches[0]?.clientX || 0;
+      const deltaX = endX - onboardingTouchStartX;
+      if (Math.abs(deltaX) < 48) return;
+      if (deltaX < 0 && active === "onboarding") showAppScreen("nickname");
+      if (deltaX > 0 && active === "nickname") showAppScreen("onboarding");
+    }, { passive: true });
     nicknameInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
         submitNickname();
