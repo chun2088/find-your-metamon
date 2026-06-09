@@ -741,6 +741,7 @@
       font-size: clamp(42px, 12vw, 76px);
       line-height: 0.98;
       color: #2f2640;
+      text-shadow: 0 3px 0 rgba(255, 255, 255, 0.72), 0 12px 26px rgba(72, 48, 96, 0.2);
     }
 
     .stage-clear p {
@@ -748,6 +749,8 @@
       color: var(--soft-ink);
       font-size: 15px;
       line-height: 1.55;
+      font-weight: 900;
+      text-shadow: 0 2px 0 rgba(255, 255, 255, 0.86), 0 10px 22px rgba(72, 48, 96, 0.22);
     }
 
     .center-next {
@@ -900,7 +903,7 @@
       color: #2f2640;
       font-weight: 1000;
       background: #ffd84d;
-      clip-path: polygon(50% 0, 96% 78%, 4% 78%);
+      clip-path: path("M29 1 C43 8 55 25 56 45 C41 55 17 55 2 45 C3 25 15 8 29 1 Z");
       animation: float-join-right 1800ms ease-in-out infinite;
     }
 
@@ -1064,16 +1067,18 @@
     .nickname-symbol {
       align-self: center;
       margin: 28px auto 0;
+      transform-origin: 50% 56%;
+      animation: nickname-spin 1700ms linear infinite;
       transition: transform 260ms ease, filter 260ms ease;
     }
 
     .nickname-symbol.is-sparkling {
-      animation: reuleaux-spark 640ms ease;
+      animation: reuleaux-spark 640ms ease, nickname-spin 1700ms linear infinite;
     }
 
     .match-screen {
       background: #edeade;
-      padding: 16px 18px calc(82px + env(safe-area-inset-bottom));
+      padding: 16px 18px calc(22px + env(safe-area-inset-bottom));
     }
 
     .app-header {
@@ -1128,8 +1133,10 @@
       position: relative;
       display: grid;
       place-items: center;
+      width: calc(100% - 84px);
       min-height: 118px;
       margin: 0 42px 18px;
+      border: 0;
       border-radius: 24px;
       overflow: hidden;
       background:
@@ -1142,14 +1149,36 @@
       font-weight: 1000;
       text-align: center;
       box-shadow: inset 0 0 34px rgba(0, 0, 0, 0.14);
+      cursor: default;
+      transition: transform 420ms ease, box-shadow 420ms ease, filter 420ms ease;
     }
 
     .locked-profile::before {
-      content: "▣";
+      content: "🔒";
       display: block;
       margin-bottom: 10px;
       font-size: 31px;
       line-height: 1;
+    }
+
+    .locked-profile.is-unlocked {
+      background:
+        linear-gradient(rgba(255, 216, 77, 0.18), rgba(255, 216, 77, 0.18)),
+        radial-gradient(circle at 26% 34%, rgba(255, 216, 77, 0.92), transparent 24%),
+        radial-gradient(circle at 68% 30%, rgba(168, 117, 219, 0.74), transparent 21%),
+        linear-gradient(135deg, #fff8da, #ffd84d);
+      color: #28221c;
+      box-shadow: 0 16px 34px rgba(160, 115, 10, 0.2);
+      cursor: pointer;
+      transform: translateY(-2px);
+    }
+
+    .locked-profile.is-unlocked::before {
+      content: "🔓";
+    }
+
+    .locked-profile:disabled {
+      pointer-events: none;
     }
 
     .match-chat {
@@ -1215,6 +1244,7 @@
     }
 
     .symbol-pair {
+      position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -1222,9 +1252,41 @@
       margin-bottom: 22px;
     }
 
+    .symbol-pair::before {
+      content: "";
+      position: absolute;
+      left: 33px;
+      right: 33px;
+      top: 50%;
+      height: 22px;
+      border-top: 4px solid #e8485f;
+      border-radius: 50%;
+      transform: translateY(-40%) rotate(-2deg);
+      filter: drop-shadow(0 4px 5px rgba(232, 72, 95, 0.2));
+      z-index: 0;
+    }
+
+    .symbol-pair .ditto-symbol,
+    .symbol-pair .mini-heart,
+    .symbol-pair .reuleaux-symbol {
+      z-index: 1;
+    }
+
     .mini-heart {
       color: #ff7893;
       font-weight: 1000;
+      text-shadow: 0 2px 0 #fff8ea, 0 0 10px rgba(232, 72, 95, 0.28);
+    }
+
+    .symbol-pair .mini-heart {
+      position: relative;
+      top: -10px;
+      display: inline-grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: transparent;
     }
 
     .match-cta {
@@ -1403,23 +1465,24 @@
     .moment-bubble::after {
       content: "";
       position: absolute;
-      bottom: 7px;
-      width: 17px;
-      height: 17px;
-      border-radius: 3px 13px 13px 13px;
-      box-shadow: 0 8px 18px rgba(92, 80, 62, 0.06);
+      bottom: -7px;
+      width: 34px;
+      height: 25px;
+      box-shadow: 0 8px 18px rgba(92, 80, 62, 0.05);
     }
 
     .moment-bubble::before {
-      left: -5px;
+      left: 8px;
+      border-radius: 0 0 0 999px;
       background: #fff;
-      transform: rotate(28deg);
+      clip-path: path("M31 0 C25 14 16 22 0 25 C10 16 12 7 12 0 Z");
     }
 
     .moment-bubble::after {
-      right: -5px;
+      right: 8px;
+      border-radius: 0 0 999px 0;
       background: #ffe07a;
-      transform: rotate(62deg);
+      clip-path: path("M3 0 C9 14 18 22 34 25 C24 16 22 7 22 0 Z");
     }
 
     .moment-bubble.mine {
@@ -1562,6 +1625,71 @@
       transform: translate(-50%, 0);
     }
 
+    .camera-sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 800;
+      display: none;
+      place-items: center;
+      padding: 18px;
+      background: rgba(47, 38, 64, 0.72);
+      backdrop-filter: blur(18px);
+    }
+
+    .camera-sheet.is-visible {
+      display: grid;
+    }
+
+    .camera-panel {
+      display: grid;
+      gap: 14px;
+      width: min(94vw, 430px);
+      padding: 14px;
+      border-radius: 28px;
+      background: #fff8ea;
+      box-shadow: 0 24px 64px rgba(34, 24, 47, 0.28);
+    }
+
+    .camera-preview {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      border-radius: 22px;
+      background: #2f2640;
+      object-fit: cover;
+      overflow: hidden;
+    }
+
+    .camera-status {
+      min-height: 20px;
+      margin: 0 4px;
+      color: #675a7c;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .camera-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .camera-action {
+      min-height: 52px;
+      border: 0;
+      border-radius: 999px;
+      background: #fff;
+      color: #2f2640;
+      font-size: 15px;
+      font-weight: 1000;
+      cursor: pointer;
+    }
+
+    .camera-action.primary {
+      background: #ffd84d;
+      box-shadow: 0 12px 24px rgba(160, 115, 10, 0.16);
+    }
+
     @keyframes clear-sticker-pop {
       0% {
         opacity: 0;
@@ -1603,6 +1731,11 @@
       0%,
       100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 12px 16px rgba(67, 46, 85, 0.12)); }
       45% { transform: scale(1.18) rotate(12deg); filter: drop-shadow(0 0 18px rgba(255, 216, 77, 0.9)); }
+    }
+
+    @keyframes nickname-spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
     @keyframes bubble-rise {
@@ -1739,7 +1872,7 @@
         <span>연애, 고민, 일상 무엇이든 디또와 이야기해보세요!</span>
       </div>
       <div class="date-chip">오늘의 AI 매칭</div>
-      <div class="locked-profile">새 프로필이 도착했어요</div>
+      <button class="locked-profile" type="button" data-go="profile" disabled>새 프로필이 도착했어요</button>
       <div class="match-chat">
         <div class="match-speaker">
           <div class="match-avatar" aria-hidden="true"><span class="ditto-symbol"></span></div>
@@ -1750,9 +1883,6 @@
             <div class="match-bubble">조용히 오래 좋아하는 타입이고, 음식과 영화와 꼬리에 꼬리를 무는 어디로 튈지 모르는 이야기를 오래 나눌 수 있는 사람이래. 지금 바로 확인해볼래?</div>
           </div>
         </div>
-      </div>
-      <div class="match-cta">
-        <button class="app-button" type="button" data-go="profile">매칭 상대 보러가기</button>
       </div>
     </section>
 
@@ -1812,26 +1942,35 @@
           <span class="mini-heart">♥</span>
           <span class="reuleaux-symbol"></span>
         </div>
-        <h1>고백을 수락했어요</h1>
-        <p>민경님과 승환님의<br />러브코메디가 시작됩니다</p>
-        <p>민경님,<br />나는 너랑 함께하는 시간이, 대화가, 경험이 좋고,<br />앞으로도 더 많은 순간을 같이 쌓아가고 싶어요.</p>
-        <p>우리, 조금 더 특별한 사이가 되어봐요.</p>
-        <button class="app-button" id="savePageButton" type="button">우리의 첫 페이지 저장하기</button>
+        <h1>붉은 실이 이어졌어요</h1>
+        <p>민경님과 승환님의<br />러브코메디가 시작됩니다.</p>
+        <p>민경님 함께하는 시간이, 대화가, 경험이 좋았고,<br />앞으로도 더욱 더 즐겁고<br />특별한 순간들을<br />함께 쌓아 가고 싶어요.</p>
+        <button class="app-button" id="savePageButton" type="button">이 순간을 추억하세요 📷</button>
       </article>
     </section>
   </main>
+  <section class="camera-sheet" id="cameraSheet" aria-hidden="true">
+    <div class="camera-panel" role="dialog" aria-modal="true" aria-label="추억 사진 촬영">
+      <video class="camera-preview" id="cameraPreview" autoplay playsinline muted></video>
+      <p class="camera-status" id="cameraStatus">카메라 권한을 요청하고 있어요.</p>
+      <div class="camera-actions">
+        <button class="camera-action" id="cameraCloseButton" type="button">닫기</button>
+        <button class="camera-action primary" id="cameraCaptureButton" type="button" disabled>촬영하기</button>
+      </div>
+    </div>
+  </section>
   <div class="toast" id="toast">저장되었습니다</div>
 
   <script>
     const totalStickerGoal = 31;
     const fieldStickerCount = 30;
     const collageSlots = [
-      [6, 7, 38, -18, 78], [25, 6, 34, 14, 64], [47, 8, 39, -8, 91], [70, 7, 35, 22, 55], [93, 9, 40, -16, 82],
-      [13, 22, 42, 24, 66], [36, 20, 37, -22, 96], [61, 23, 43, 10, 70], [85, 22, 39, -26, 88],
-      [3, 39, 45, 12, 58], [24, 38, 40, -12, 84], [49, 39, 46, 28, 99], [75, 38, 41, -9, 62], [97, 40, 44, 18, 90],
-      [15, 55, 44, -28, 93], [39, 56, 48, 9, 60], [64, 55, 43, -18, 100], [88, 57, 47, 24, 74],
-      [5, 72, 43, 20, 69], [28, 73, 49, -8, 95], [52, 72, 45, 17, 57], [77, 74, 50, -25, 87], [96, 73, 42, 10, 98],
-      [13, 90, 47, -14, 81], [35, 91, 42, 26, 59], [58, 90, 48, -21, 92], [82, 91, 45, 15, 67],
+      [6, 7, 38, -18, 78], [25, 6, 34, 14, 64], [80, 20, 39, -8, 91], [70, 7, 35, 22, 55], [25, 45, 42, -16, 220],
+      [13, 22, 42, 24, 66], [36, 20, 37, -22, 96], [61, 23, 43, 10, 70], [57, 49, 41, -26, 221],
+      [3, 39, 45, 12, 58], [93, 9, 40, -12, 84], [49, 39, 46, 28, 99], [75, 38, 41, -9, 62], [35, 91, 42, 26, 59],
+      [15, 55, 44, -28, 93], [39, 56, 48, 9, 60], [58, 90, 48, -21, 92], [5, 72, 43, 20, 69],
+      [28, 73, 49, -8, 95], [52, 72, 45, 17, 57], [77, 74, 50, -25, 87], [13, 90, 47, -14, 81], [96, 73, 42, 10, 98],
+      [97, 40, 44, 18, 90], [88, 57, 47, 24, 74], [82, 91, 45, 15, 67],
       [22, 49, 52, 33, 101], [69, 48, 51, -34, 103], [43, 28, 50, 19, 105], [56, 84, 53, -11, 107]
     ];
     const stickerSources = [
@@ -1877,6 +2016,11 @@
     const chatNoButton = document.getElementById("chatNoButton");
     const savePageButton = document.getElementById("savePageButton");
     const toast = document.getElementById("toast");
+    const cameraSheet = document.getElementById("cameraSheet");
+    const cameraPreview = document.getElementById("cameraPreview");
+    const cameraStatus = document.getElementById("cameraStatus");
+    const cameraCloseButton = document.getElementById("cameraCloseButton");
+    const cameraCaptureButton = document.getElementById("cameraCaptureButton");
     let removed = 0;
     let audioContext;
     let waterTimer;
@@ -1886,6 +2030,7 @@
     let momentsStarted = false;
     let matchMessageTimers = [];
     let onboardingTouchStartX = 0;
+    let cameraStream;
 
     function getAudioContext() {
       audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
@@ -2174,10 +2319,12 @@
 
       const matchScreen = document.querySelector(".match-screen");
       const bubbles = Array.from(matchScreen.querySelectorAll(".match-bubble"));
-      const cta = matchScreen.querySelector(".match-cta");
+      const lockedProfile = matchScreen.querySelector(".locked-profile");
 
       bubbles.forEach((bubble) => bubble.classList.remove("is-visible"));
-      cta.classList.remove("is-visible");
+      lockedProfile.classList.remove("is-unlocked");
+      lockedProfile.disabled = true;
+      lockedProfile.textContent = "새 프로필이 도착했어요";
 
       bubbles.forEach((bubble, index) => {
         const timer = setTimeout(() => {
@@ -2186,10 +2333,12 @@
         matchMessageTimers.push(timer);
       });
 
-      const ctaTimer = setTimeout(() => {
-        cta.classList.add("is-visible");
+      const unlockTimer = setTimeout(() => {
+        lockedProfile.classList.add("is-unlocked");
+        lockedProfile.disabled = false;
+        lockedProfile.textContent = "매칭 상대 보러가기";
       }, 360 + bubbles.length * 900 + 240);
-      matchMessageTimers.push(ctaTimer);
+      matchMessageTimers.push(unlockTimer);
     }
 
     function startMobileApp() {
@@ -2238,20 +2387,21 @@
       ];
 
       const bubbleDelay = 1500;
+      const finalBubbleExtraDelay = 3000;
       moments.forEach((moment, index) => {
         setTimeout(() => {
           const bubble = document.createElement("div");
           bubble.className = `moment-bubble ${moment.final ? "final" : ""}`;
           bubble.textContent = moment.icon;
           momentFlow.appendChild(bubble);
-        }, index * bubbleDelay);
+        }, index * bubbleDelay + (moment.final ? finalBubbleExtraDelay : 0));
       });
 
       setTimeout(() => {
         fakeInput.classList.add("is-hidden");
         chatQuestion.classList.add("is-visible");
         document.querySelector(".chat-screen").classList.add("question-shown");
-      }, moments.length * bubbleDelay + 760);
+      }, moments.length * bubbleDelay + finalBubbleExtraDelay + 760);
     }
 
     function showToast() {
@@ -2259,11 +2409,142 @@
       setTimeout(() => toast.classList.remove("is-visible"), 1500);
     }
 
+    function stopCamera() {
+      if (!cameraStream) return;
+      cameraStream.getTracks().forEach((track) => track.stop());
+      cameraStream = null;
+      cameraPreview.srcObject = null;
+    }
+
+    async function openMomentCamera() {
+      cameraSheet.classList.add("is-visible");
+      cameraSheet.setAttribute("aria-hidden", "false");
+      cameraStatus.textContent = "카메라 권한을 요청하고 있어요.";
+      cameraCaptureButton.disabled = true;
+
+      try {
+        if (!navigator.mediaDevices?.getUserMedia) {
+          cameraStatus.textContent = "이 브라우저에서는 카메라를 열 수 없어요.";
+          return;
+        }
+
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" },
+          audio: false
+        });
+        cameraPreview.srcObject = cameraStream;
+        await cameraPreview.play();
+        cameraStatus.textContent = "이 순간을 남겨보세요.";
+        cameraCaptureButton.disabled = false;
+      } catch {
+        cameraStatus.textContent = "카메라 권한을 허용하면 사진을 남길 수 있어요.";
+      }
+    }
+
+    function closeMomentCamera() {
+      stopCamera();
+      cameraSheet.classList.remove("is-visible");
+      cameraSheet.setAttribute("aria-hidden", "true");
+    }
+
+    function formatMomentDate(date = new Date()) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const hour = String(date.getHours()).padStart(2, "0");
+      const minute = String(date.getMinutes()).padStart(2, "0");
+      return `${year}.${month}.${day} ${hour}:${minute}`;
+    }
+
+    async function saveStampedPhoto(blob) {
+      const file = new File([blob], `ditto-moment-${Date.now()}.jpg`, { type: "image/jpeg" });
+
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: "Ditto Moment",
+          text: "이 순간을 추억하세요."
+        });
+        return;
+      }
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = file.name;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1200);
+    }
+
+    async function captureMomentPhoto() {
+      if (!cameraStream || !cameraPreview.videoWidth) return;
+
+      cameraCaptureButton.disabled = true;
+      cameraStatus.textContent = "날짜를 새겨 저장하고 있어요.";
+
+      const canvas = document.createElement("canvas");
+      const width = cameraPreview.videoWidth;
+      const height = cameraPreview.videoHeight;
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(cameraPreview, 0, 0, width, height);
+
+      const stamp = formatMomentDate();
+      const padding = Math.max(24, Math.round(width * 0.045));
+      const fontSize = Math.max(30, Math.round(width * 0.052));
+      ctx.font = `900 ${fontSize}px Pretendard, system-ui, sans-serif`;
+      ctx.textBaseline = "bottom";
+      const textWidth = ctx.measureText(stamp).width;
+      const boxHeight = fontSize + padding * 0.8;
+      const boxWidth = textWidth + padding * 1.2;
+      const x = padding;
+      const y = height - padding;
+      const boxX = x - padding * 0.45;
+      const boxY = y - boxHeight;
+      const radius = fontSize * 0.55;
+
+      ctx.fillStyle = "rgba(47, 38, 64, 0.62)";
+      ctx.beginPath();
+      ctx.moveTo(boxX + radius, boxY);
+      ctx.lineTo(boxX + boxWidth - radius, boxY);
+      ctx.quadraticCurveTo(boxX + boxWidth, boxY, boxX + boxWidth, boxY + radius);
+      ctx.lineTo(boxX + boxWidth, boxY + boxHeight - radius);
+      ctx.quadraticCurveTo(boxX + boxWidth, boxY + boxHeight, boxX + boxWidth - radius, boxY + boxHeight);
+      ctx.lineTo(boxX + radius, boxY + boxHeight);
+      ctx.quadraticCurveTo(boxX, boxY + boxHeight, boxX, boxY + boxHeight - radius);
+      ctx.lineTo(boxX, boxY + radius);
+      ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "#fff8ea";
+      ctx.fillText(stamp, x, y - padding * 0.25);
+
+      canvas.toBlob(async (blob) => {
+        if (!blob) {
+          cameraStatus.textContent = "사진 저장에 실패했어요.";
+          cameraCaptureButton.disabled = false;
+          return;
+        }
+
+        try {
+          await saveStampedPhoto(blob);
+          cameraStatus.textContent = "저장할 사진을 준비했어요.";
+          closeMomentCamera();
+          showToast();
+        } catch {
+          cameraStatus.textContent = "공유나 저장을 다시 시도해주세요.";
+          cameraCaptureButton.disabled = false;
+        }
+      }, "image/jpeg", 0.92);
+    }
+
     function getEscapeVector(sourceButton, avoidButton) {
       const distance = Math.max(window.innerWidth, window.innerHeight) * 1.18;
-      const blockedStart = Math.PI / 4;
-      const blockedSize = Math.PI / 2;
-      const angle = (blockedStart + blockedSize + Math.random() * (Math.PI * 2 - blockedSize)) % (Math.PI * 2);
+      const angle = Math.PI + Math.random() * Math.PI;
       return { dx: Math.cos(angle) * distance, dy: Math.sin(angle) * distance };
     }
 
@@ -2321,7 +2602,9 @@
       playYesSound();
       showAppScreen("success");
     });
-    savePageButton.addEventListener("click", showToast);
+    savePageButton.addEventListener("click", openMomentCamera);
+    cameraCloseButton.addEventListener("click", closeMomentCamera);
+    cameraCaptureButton.addEventListener("click", captureMomentPhoto);
     progressSticker.addEventListener("click", removeProgressSticker);
     document.addEventListener("dblclick", (event) => event.preventDefault(), { passive: false });
 
