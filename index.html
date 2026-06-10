@@ -174,10 +174,6 @@
       z-index: 1;
     }
 
-    .real-pokemon.is-blocked {
-      pointer-events: none;
-    }
-
     .real-pokemon.is-splashing {
       animation: splash-bounce 620ms cubic-bezier(0.18, 0.86, 0.22, 1.16);
     }
@@ -2134,7 +2130,7 @@
       button.innerHTML = `
         <img class="ditto-img" src="public/assets/stickers/ditto/130.png" alt="" draggable="false" />
       `;
-      button.addEventListener("click", (event) => splashRealPokemon(button, event));
+      button.addEventListener("click", () => splashRealPokemon(button));
       return button;
     }
 
@@ -2146,8 +2142,6 @@
       counter.textContent = `${removed} / ${totalStickerGoal}`;
 
       setTimeout(() => button.remove(), 380);
-      updateRealPokemonHitState();
-      setTimeout(updateRealPokemonHitState, 420);
 
       maybeShowQuestion();
     }
@@ -2161,31 +2155,8 @@
       maybeShowQuestion();
     }
 
-    function rectsOverlap(a, b) {
-      return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
-    }
-
-    function isRealPokemonCovered(button) {
-      const realRect = button.getBoundingClientRect();
-      return Array.from(field.querySelectorAll(".ditto:not(.real-pokemon)")).some((sticker) => {
-        if (sticker.classList.contains("is-popped")) return false;
-        return rectsOverlap(realRect, sticker.getBoundingClientRect());
-      });
-    }
-
-    function updateRealPokemonHitState() {
-      const realPokemon = document.querySelector(".real-pokemon");
-      if (!realPokemon || realPokemon.classList.contains("is-popped")) return;
-      realPokemon.classList.toggle("is-blocked", isRealPokemonCovered(realPokemon));
-    }
-
-    function splashRealPokemon(button, event) {
+    function splashRealPokemon(button) {
       if (button.classList.contains("is-popped")) return;
-      if (button.classList.contains("is-blocked") || isRealPokemonCovered(button)) {
-        button.classList.add("is-blocked");
-        event?.preventDefault();
-        return;
-      }
       const splashes = Number(button.dataset.splashes || "0") + 1;
       button.dataset.splashes = `${splashes}`;
       const isFinalSplash = splashes >= 100;
@@ -2628,7 +2599,6 @@
 
     field.appendChild(createRealPokemonSticker());
     dittos.map(createDitto).forEach((ditto) => field.appendChild(ditto));
-    updateRealPokemonHitState();
     scatterSparkles();
   </script>
 </body>
