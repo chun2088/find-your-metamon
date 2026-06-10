@@ -457,6 +457,7 @@
       position: absolute;
       z-index: 300;
       inset: 0;
+      display: none;
       overflow: hidden;
       pointer-events: none;
       opacity: 0;
@@ -464,6 +465,7 @@
     }
 
     .water-screen.is-visible {
+      display: block;
       animation: water-cover 1200ms ease forwards;
     }
 
@@ -2188,7 +2190,7 @@
       const isFinalSplash = splashes >= 100;
       warnCounterWrongTap();
       playThrottledWaterSound(isFinalSplash);
-      button.classList.remove("is-splashing");
+      button.classList.remove("is-splashing", "is-popped");
       void button.offsetWidth;
       button.classList.add(isFinalSplash ? "is-popped" : "is-splashing");
       renderWaterSplash(isFinalSplash);
@@ -2196,6 +2198,12 @@
       if (isFinalSplash) {
         setTimeout(() => button.remove(), 560);
       }
+    }
+
+    function resetWaterSplash() {
+      clearTimeout(waterTimer);
+      waterScreen.classList.remove("is-visible");
+      waterScreen.innerHTML = "";
     }
 
     function playThrottledWaterSound(force = false) {
@@ -2209,8 +2217,7 @@
       const now = performance.now();
       if (!isFinalSplash && now - lastWaterEffectAt < 180) return;
       lastWaterEffectAt = now;
-      waterScreen.classList.remove("is-visible");
-      waterScreen.innerHTML = "";
+      resetWaterSplash();
 
       const dropCount = isFinalSplash ? 56 : 18;
       const fragment = document.createDocumentFragment();
@@ -2229,10 +2236,8 @@
 
       void waterScreen.offsetWidth;
       waterScreen.classList.add("is-visible");
-      clearTimeout(waterTimer);
       waterTimer = setTimeout(() => {
-        waterScreen.classList.remove("is-visible");
-        waterScreen.innerHTML = "";
+        resetWaterSplash();
       }, 1240);
     }
 
@@ -2252,9 +2257,11 @@
       const realPokemon = document.querySelector(".real-pokemon");
       if (!realPokemon) return;
       realPokemon.remove();
+      resetWaterSplash();
     }
 
     function showQuestion() {
+      resetWaterSplash();
       removeRealPokemonIfPresent();
       stage.classList.add("final");
       panel.classList.add("is-visible");
@@ -2343,6 +2350,7 @@
 
     function startMobileApp() {
       clearTimeout(splashTimer);
+      resetWaterSplash();
       stage.classList.add("is-hidden");
       mobileApp.classList.add("is-visible");
       mobileApp.setAttribute("aria-hidden", "false");
@@ -2570,6 +2578,15 @@
     }
 
     nextStepButton.addEventListener("click", startMobileApp);
+    waterScreen.addEventListener("animationend", (event) => {
+      if (event.target === waterScreen) resetWaterSplash();
+    });
+    field.addEventListener("animationend", (event) => {
+      const realPokemon = event.target.closest?.(".real-pokemon");
+      if (realPokemon?.classList.contains("is-splashing")) {
+        realPokemon.classList.remove("is-splashing");
+      }
+    });
     matchingStartButton.addEventListener("click", submitNickname);
     document.querySelectorAll("[data-onboarding-dot]").forEach((dot) => {
       dot.addEventListener("click", () => showAppScreen(dot.dataset.onboardingDot));
