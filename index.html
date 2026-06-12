@@ -1192,6 +1192,11 @@
       pointer-events: none;
     }
 
+    .locked-profile.is-jolting {
+      animation: locked-profile-jolt 520ms cubic-bezier(0.16, 0.86, 0.24, 1.12);
+      filter: saturate(1.08);
+    }
+
     .match-chat {
       display: grid;
       gap: 8px;
@@ -1584,6 +1589,10 @@
       pointer-events: auto;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
+      animation:
+        moment-part-pop 340ms cubic-bezier(0.16, 0.86, 0.26, 1.24) forwards,
+        wakeable-sticker-wiggle 1300ms ease-in-out infinite;
+      animation-delay: var(--part-delay), calc(var(--part-delay) + 420ms);
     }
 
     .moment-sticker.is-waking {
@@ -1908,6 +1917,42 @@
       100% {
         opacity: 1;
         transform: translateY(0) scale(1) rotate(0deg);
+      }
+    }
+
+    @keyframes locked-profile-jolt {
+      0%,
+      100% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        box-shadow: inset 0 0 34px rgba(0, 0, 0, 0.14);
+      }
+      18% {
+        transform: translateY(-3px) rotate(-1.2deg) scale(1.015);
+      }
+      38% {
+        transform: translateY(2px) rotate(1.1deg) scale(0.995);
+        box-shadow: inset 0 0 34px rgba(0, 0, 0, 0.16), 0 10px 24px rgba(160, 115, 10, 0.14);
+      }
+      58% {
+        transform: translateY(-1px) rotate(-0.5deg) scale(1.006);
+      }
+    }
+
+    @keyframes wakeable-sticker-wiggle {
+      0%,
+      100% {
+        transform: translateY(0) scale(1) rotate(0deg);
+        filter: drop-shadow(0 5px 6px rgba(92, 80, 62, 0.12));
+      }
+      24% {
+        transform: translateY(-2px) scale(1.04) rotate(-5deg);
+        filter: drop-shadow(0 7px 9px rgba(92, 80, 62, 0.16));
+      }
+      50% {
+        transform: translateY(1px) scale(0.99) rotate(4deg);
+      }
+      76% {
+        transform: translateY(-1px) scale(1.02) rotate(-2deg);
       }
     }
 
@@ -2543,15 +2588,29 @@
       const firstBubbleDelay = 360;
       const bubbleRevealDelay = 2000;
       const unlockDelayAfterLastBubble = 5000;
+      const joltLockedProfile = () => {
+        lockedProfile.classList.remove("is-jolting");
+        void lockedProfile.offsetWidth;
+        lockedProfile.classList.add("is-jolting");
+      };
 
       bubbles.forEach((bubble, index) => {
+        const revealDelay = firstBubbleDelay + index * bubbleRevealDelay;
         const timer = setTimeout(() => {
           bubble.classList.add("is-visible");
-        }, firstBubbleDelay + index * bubbleRevealDelay);
+          joltLockedProfile();
+        }, revealDelay);
         matchMessageTimers.push(timer);
       });
 
+      const finalWaitStart = firstBubbleDelay + (bubbles.length - 1) * bubbleRevealDelay + 1000;
+      for (let delay = finalWaitStart; delay < firstBubbleDelay + (bubbles.length - 1) * bubbleRevealDelay + unlockDelayAfterLastBubble; delay += 1000) {
+        const joltTimer = setTimeout(joltLockedProfile, delay);
+        matchMessageTimers.push(joltTimer);
+      }
+
       const unlockTimer = setTimeout(() => {
+        lockedProfile.classList.remove("is-jolting");
         lockedProfile.classList.add("is-unlocked");
         lockedProfile.disabled = false;
         lockedProfile.textContent = "매칭 상대 보러가기";
