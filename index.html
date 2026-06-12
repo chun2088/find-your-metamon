@@ -1603,6 +1603,14 @@
       font-weight: 700;
     }
 
+    .success-note {
+      max-width: 260px;
+      color: #675a7c;
+      font-size: 16px;
+      line-height: 1.65;
+      font-weight: 900;
+    }
+
     .toast {
       position: fixed;
       left: 50%;
@@ -1670,7 +1678,7 @@
 
     .camera-actions {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 0.9fr 0.95fr 1.15fr;
       gap: 10px;
     }
 
@@ -1688,6 +1696,10 @@
     .camera-action.primary {
       background: #ffd84d;
       box-shadow: 0 12px 24px rgba(160, 115, 10, 0.16);
+    }
+
+    .camera-preview.is-front {
+      transform: scaleX(-1);
     }
 
     @keyframes clear-sticker-pop {
@@ -1943,8 +1955,7 @@
           <span class="reuleaux-symbol"></span>
         </div>
         <h1>붉은 실이 이어졌어요</h1>
-        <p>민경님과 승환님의<br />러브코메디가 시작됩니다.</p>
-        <p>민경님 함께하는 시간이, 대화가, 경험이 좋았고,<br />앞으로도 더욱 더 즐겁고<br />특별한 순간들을<br />함께 쌓아 가고 싶어요.</p>
+        <p class="success-note">오늘은 사진으로,<br />마음은 편지로.</p>
         <button class="app-button" id="savePageButton" type="button">이 순간을 추억하세요 📷</button>
       </article>
     </section>
@@ -1955,11 +1966,12 @@
       <p class="camera-status" id="cameraStatus">카메라 권한을 요청하고 있어요.</p>
       <div class="camera-actions">
         <button class="camera-action" id="cameraCloseButton" type="button">닫기</button>
+        <button class="camera-action" id="cameraSwitchButton" type="button" disabled>전환</button>
         <button class="camera-action primary" id="cameraCaptureButton" type="button" disabled>촬영하기</button>
       </div>
     </div>
   </section>
-  <div class="toast" id="toast">저장되었습니다</div>
+  <div class="toast" id="toast">사진에 오늘을 새겼어요</div>
 
   <script>
     const totalStickerGoal = 31;
@@ -2020,6 +2032,7 @@
     const cameraPreview = document.getElementById("cameraPreview");
     const cameraStatus = document.getElementById("cameraStatus");
     const cameraCloseButton = document.getElementById("cameraCloseButton");
+    const cameraSwitchButton = document.getElementById("cameraSwitchButton");
     const cameraCaptureButton = document.getElementById("cameraCaptureButton");
     let removed = 0;
     let audioContext;
@@ -2031,6 +2044,7 @@
     let matchMessageTimers = [];
     let onboardingTouchStartX = 0;
     let cameraStream;
+    let cameraFacingMode = "user";
 
     function getAudioContext() {
       audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
@@ -2416,33 +2430,62 @@
       cameraPreview.srcObject = null;
     }
 
+    async function startCamera(facingMode) {
+      cameraCaptureButton.disabled = true;
+      cameraSwitchButton.disabled = true;
+
+      if (!navigator.mediaDevices?.getUserMedia) {
+        cameraStatus.textContent = "이 브라우저에서는 카메라를 열 수 없어요.";
+        return;
+      }
+
+      const previousStream = cameraStream;
+      const nextStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: facingMode } },
+        audio: false
+      });
+      previousStream?.getTracks().forEach((track) => track.stop());
+      cameraStream = nextStream;
+      cameraFacingMode = facingMode;
+      cameraPreview.srcObject = cameraStream;
+      cameraPreview.classList.toggle("is-front", cameraFacingMode === "user");
+      await cameraPreview.play();
+      cameraStatus.textContent = cameraFacingMode === "user" ? "전면 카메라로 남겨보세요." : "후면 카메라로 남겨보세요.";
+      cameraCaptureButton.disabled = false;
+      cameraSwitchButton.disabled = false;
+    }
+
     async function openMomentCamera() {
       cameraSheet.classList.add("is-visible");
       cameraSheet.setAttribute("aria-hidden", "false");
       cameraStatus.textContent = "카메라 권한을 요청하고 있어요.";
-      cameraCaptureButton.disabled = true;
 
       try {
-        if (!navigator.mediaDevices?.getUserMedia) {
-          cameraStatus.textContent = "이 브라우저에서는 카메라를 열 수 없어요.";
-          return;
-        }
-
-        cameraStream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "user" },
-          audio: false
-        });
-        cameraPreview.srcObject = cameraStream;
-        await cameraPreview.play();
-        cameraStatus.textContent = "이 순간을 남겨보세요.";
-        cameraCaptureButton.disabled = false;
+        await startCamera(cameraFacingMode);
       } catch {
         cameraStatus.textContent = "카메라 권한을 허용하면 사진을 남길 수 있어요.";
       }
     }
 
+    async function switchMomentCamera() {
+      const previousFacingMode = cameraFacingMode;
+      const nextFacingMode = cameraFacingMode === "user" ? "environment" : "user";
+      cameraStatus.textContent = "카메라를 전환하고 있어요.";
+
+      try {
+        await startCamera(nextFacingMode);
+      } catch {
+        cameraFacingMode = previousFacingMode;
+        cameraStatus.textContent = "이 기기에서는 다른 카메라로 전환할 수 없어요.";
+        cameraCaptureButton.disabled = !cameraStream;
+        cameraSwitchButton.disabled = !cameraStream;
+      }
+    }
+
     function closeMomentCamera() {
       stopCamera();
+      cameraCaptureButton.disabled = true;
+      cameraSwitchButton.disabled = true;
       cameraSheet.classList.remove("is-visible");
       cameraSheet.setAttribute("aria-hidden", "true");
     }
@@ -2451,9 +2494,7 @@
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
       const day = String(date.getDate()).padStart(2, "0");
-      const hour = String(date.getHours()).padStart(2, "0");
-      const minute = String(date.getMinutes()).padStart(2, "0");
-      return `${year}.${month}.${day} ${hour}:${minute}`;
+      return `${year}.${month}.${day}`;
     }
 
     async function saveStampedPhoto(blob) {
@@ -2491,23 +2532,29 @@
       canvas.height = height;
 
       const ctx = canvas.getContext("2d");
+      ctx.save();
+      if (cameraFacingMode === "user") {
+        ctx.translate(width, 0);
+        ctx.scale(-1, 1);
+      }
       ctx.drawImage(cameraPreview, 0, 0, width, height);
+      ctx.restore();
 
       const stamp = formatMomentDate();
       const padding = Math.max(24, Math.round(width * 0.045));
-      const fontSize = Math.max(30, Math.round(width * 0.052));
-      ctx.font = `900 ${fontSize}px Pretendard, system-ui, sans-serif`;
+      const fontSize = Math.max(34, Math.round(width * 0.058));
+      ctx.font = `900 ${fontSize}px "Courier New", "Lucida Console", monospace`;
       ctx.textBaseline = "bottom";
       const textWidth = ctx.measureText(stamp).width;
-      const boxHeight = fontSize + padding * 0.8;
-      const boxWidth = textWidth + padding * 1.2;
+      const boxHeight = fontSize + padding * 0.9;
+      const boxWidth = textWidth + padding * 1.35;
       const x = padding;
       const y = height - padding;
       const boxX = x - padding * 0.45;
       const boxY = y - boxHeight;
-      const radius = fontSize * 0.55;
+      const radius = fontSize * 0.22;
 
-      ctx.fillStyle = "rgba(47, 38, 64, 0.62)";
+      ctx.fillStyle = "rgba(255, 242, 168, 0.9)";
       ctx.beginPath();
       ctx.moveTo(boxX + radius, boxY);
       ctx.lineTo(boxX + boxWidth - radius, boxY);
@@ -2520,8 +2567,16 @@
       ctx.quadraticCurveTo(boxX, boxY, boxX + radius, boxY);
       ctx.closePath();
       ctx.fill();
-      ctx.fillStyle = "#fff8ea";
+      ctx.lineWidth = Math.max(3, Math.round(width * 0.004));
+      ctx.strokeStyle = "rgba(47, 38, 64, 0.86)";
+      ctx.stroke();
+      ctx.shadowColor = "rgba(232, 72, 95, 0.55)";
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetX = Math.max(2, Math.round(width * 0.004));
+      ctx.shadowOffsetY = Math.max(2, Math.round(width * 0.004));
+      ctx.fillStyle = "#2f2640";
       ctx.fillText(stamp, x, y - padding * 0.25);
+      ctx.shadowColor = "transparent";
 
       canvas.toBlob(async (blob) => {
         if (!blob) {
@@ -2604,6 +2659,7 @@
     });
     savePageButton.addEventListener("click", openMomentCamera);
     cameraCloseButton.addEventListener("click", closeMomentCamera);
+    cameraSwitchButton.addEventListener("click", switchMomentCamera);
     cameraCaptureButton.addEventListener("click", captureMomentPhoto);
     progressSticker.addEventListener("click", removeProgressSticker);
     document.addEventListener("dblclick", (event) => event.preventDefault(), { passive: false });
