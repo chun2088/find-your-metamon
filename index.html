@@ -1425,16 +1425,43 @@
     }
 
     .chat-banner {
-      position: relative;
-      z-index: 0;
-      margin: 10px 8px 18px;
-      padding: 12px 16px;
-      border-radius: 18px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 2;
+      width: min(78%, 300px);
+      min-height: 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 18px;
+      border-radius: 999px;
       background: rgba(255, 255, 255, 0.64);
       color: #766a5a;
       font-size: 13px;
       font-weight: 800;
       text-align: center;
+      box-shadow: 0 12px 28px rgba(92, 80, 62, 0.08);
+      transform: translate(-50%, -50%);
+      transition: opacity 360ms ease, transform 360ms ease;
+      pointer-events: none;
+    }
+
+    .chat-banner::after {
+      content: "";
+      width: 34px;
+      height: 6px;
+      margin-top: 8px;
+      border-radius: 999px;
+      background:
+        linear-gradient(90deg, #ffd84d 0 33%, rgba(255, 216, 77, 0.35) 33% 66%, rgba(255, 216, 77, 0.15) 66% 100%);
+      animation: loading-pulse 900ms ease-in-out infinite;
+    }
+
+    .chat-banner.is-hidden {
+      opacity: 0;
+      transform: translate(-50%, calc(-50% - 12px));
     }
 
     .moment-flow {
@@ -1458,6 +1485,7 @@
       justify-content: center;
       display: flex;
       align-items: center;
+      gap: 8px;
       width: min(82%, 290px);
       min-height: 54px;
       padding: 12px 18px;
@@ -1508,6 +1536,94 @@
 
     .moment-bubble.final::after {
       background: #ffd4dd;
+    }
+
+    .moment-bubble.sleepy {
+      width: min(58%, 190px);
+      min-height: 46px;
+      gap: 8px;
+      padding: 8px 14px;
+      font-size: 22px;
+      pointer-events: auto;
+    }
+
+    .moment-bubble.sleepy::before,
+    .moment-bubble.sleepy::after {
+      bottom: -5px;
+      width: 26px;
+      height: 18px;
+    }
+
+    .moment-emoji {
+      line-height: 1;
+    }
+
+    .moment-part,
+    .moment-sticker {
+      opacity: 0;
+      transform: translateY(6px) scale(0.72);
+      animation: moment-part-pop 340ms cubic-bezier(0.16, 0.86, 0.26, 1.24) forwards;
+      animation-delay: var(--part-delay);
+    }
+
+    .moment-sticker {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      filter: drop-shadow(0 5px 6px rgba(92, 80, 62, 0.12));
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .moment-sticker.is-wakeable {
+      pointer-events: auto;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .moment-sticker.is-waking {
+      animation: sleepy-sticker-wake 320ms cubic-bezier(0.16, 0.86, 0.26, 1.24) forwards;
+      animation-delay: 0ms;
+    }
+
+    .wake-poof {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      z-index: 280;
+      width: 58px;
+      height: 58px;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+    }
+
+    .wake-poof::before,
+    .wake-poof::after {
+      position: absolute;
+      opacity: 0;
+      color: #e8485f;
+      font-weight: 1000;
+      text-shadow: 0 2px 0 #fff8ea;
+      animation: wake-poof-pop 560ms ease-out forwards;
+      content: "!";
+    }
+
+    .wake-poof::before {
+      left: 6px;
+      top: 2px;
+      font-size: 24px;
+      transform: rotate(-15deg);
+    }
+
+    .wake-poof::after {
+      right: 2px;
+      bottom: 8px;
+      color: #ffd84d;
+      font-size: 22px;
+      transform: rotate(18deg);
+      content: "✦";
+      animation-delay: 80ms;
     }
 
     .final-question {
@@ -1776,6 +1892,66 @@
       }
     }
 
+    @keyframes moment-part-pop {
+      0% {
+        opacity: 0;
+        transform: translateY(6px) scale(0.72) rotate(-4deg);
+      }
+      72% {
+        opacity: 1;
+        transform: translateY(-2px) scale(1.12) rotate(3deg);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(0deg);
+      }
+    }
+
+    @keyframes sleepy-sticker-wake {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(0deg);
+        filter: drop-shadow(0 5px 6px rgba(92, 80, 62, 0.12));
+      }
+      42% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1.2) rotate(-8deg);
+        filter: drop-shadow(0 0 14px rgba(255, 216, 77, 0.82));
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-18px) scale(0.35) rotate(12deg);
+        filter: drop-shadow(0 0 18px rgba(232, 72, 95, 0.5));
+      }
+    }
+
+    @keyframes wake-poof-pop {
+      0% {
+        opacity: 0;
+        transform: translateY(8px) scale(0.4) rotate(-10deg);
+      }
+      36% {
+        opacity: 1;
+        transform: translateY(-6px) scale(1.25) rotate(8deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-22px) scale(0.8) rotate(16deg);
+      }
+    }
+
+    @keyframes loading-pulse {
+      0%,
+      100% {
+        opacity: 0.45;
+        transform: scaleX(0.72);
+      }
+      50% {
+        opacity: 1;
+        transform: scaleX(1);
+      }
+    }
+
     @keyframes soft-enter {
       from { opacity: 0; transform: translateY(16px) scale(0.98); }
       to { opacity: 1; transform: translateY(0) scale(1); }
@@ -1951,8 +2127,8 @@
       <div class="moment-flow" id="momentFlow" aria-label="함께한 순간들"></div>
       <div class="final-question" id="chatQuestion">
         <div class="chat-choice-row">
-          <button class="chat-choice yes" id="chatYesButton" type="button">예</button>
-          <button class="chat-choice no" id="chatNoButton" type="button">아니오</button>
+          <button class="chat-choice yes" id="chatYesButton" type="button">네</button>
+          <button class="chat-choice no" id="chatNoButton" type="button">아니요</button>
         </div>
       </div>
       <div class="fake-input">메시지를 입력하세요</div>
@@ -1966,7 +2142,7 @@
           <span class="reuleaux-symbol"></span>
         </div>
         <h1>붉은 실이 이어졌어요</h1>
-        <p class="success-note">오늘은 사진으로,<br />마음은 편지로.</p>
+        <p class="success-note">오늘을 사진으로</p>
         <button class="app-button" id="savePageButton" type="button">이 순간을 추억하세요 📷</button>
       </article>
     </section>
@@ -2055,7 +2231,7 @@
     let matchMessageTimers = [];
     let onboardingTouchStartX = 0;
     let cameraStream;
-    let cameraFacingMode = "user";
+    let cameraFacingMode = "environment";
 
     function getAudioContext() {
       audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
@@ -2360,10 +2536,14 @@
       lockedProfile.disabled = true;
       lockedProfile.textContent = "새 프로필이 도착했어요";
 
+      const firstBubbleDelay = 360;
+      const bubbleRevealDelay = 2000;
+      const unlockDelayAfterLastBubble = 5000;
+
       bubbles.forEach((bubble, index) => {
         const timer = setTimeout(() => {
           bubble.classList.add("is-visible");
-        }, 360 + index * 900);
+        }, firstBubbleDelay + index * bubbleRevealDelay);
         matchMessageTimers.push(timer);
       });
 
@@ -2371,7 +2551,7 @@
         lockedProfile.classList.add("is-unlocked");
         lockedProfile.disabled = false;
         lockedProfile.textContent = "매칭 상대 보러가기";
-      }, 360 + bubbles.length * 900 + 240);
+      }, firstBubbleDelay + (bubbles.length - 1) * bubbleRevealDelay + unlockDelayAfterLastBubble);
       matchMessageTimers.push(unlockTimer);
     }
 
@@ -2404,38 +2584,81 @@
       if (momentsStarted) return;
       momentsStarted = true;
       momentFlow.innerHTML = "";
-      document.querySelector(".chat-screen").classList.remove("question-shown");
+      const chatScreen = document.querySelector(".chat-screen");
+      const chatBanner = document.querySelector(".chat-banner");
+      chatScreen.classList.remove("question-shown");
+      chatBanner.classList.remove("is-hidden");
       chatQuestion.classList.remove("is-visible");
       fakeInput.classList.remove("is-hidden");
 
       const moments = [
-        { icon: "🐟" },
-        { icon: "🍺" },
-        { icon: "🍜" },
-        { icon: "🥃🌿" },
-        { icon: "🏙️ 🍷 🌇" },
-        { icon: "🍶 zzz" },
-        { icon: "🥩🧀🍜" },
-        { icon: "🍿🎬" },
-        { icon: "❤️ ❤️ ?", final: true }
+        { parts: ["🐟", "🍺", "🍜"] },
+        { parts: ["🥃", "🌿"] },
+        { parts: ["🏙️", "🍷", "🌇"] },
+        { parts: ["🍶", "💤"], sticker: "public/assets/stickers/ditto/143.png", sleepy: true, wakeable: true },
+        { parts: ["🥩", "🧀", "🍜"] },
+        { parts: ["🍿", "🎬"] },
+        { parts: ["❤️", "❤️", "?"], final: true }
       ];
 
       const bubbleDelay = 1500;
       const finalBubbleExtraDelay = 3000;
+      const loadingDelay = 3000;
       moments.forEach((moment, index) => {
         setTimeout(() => {
+          if (index === 0) chatBanner.classList.add("is-hidden");
+
           const bubble = document.createElement("div");
-          bubble.className = `moment-bubble ${moment.final ? "final" : ""}`;
-          bubble.textContent = moment.icon;
+          bubble.className = `moment-bubble ${moment.final ? "final" : ""} ${moment.sleepy ? "sleepy" : ""}`;
+
+          if (moment.parts) {
+            moment.parts.forEach((part, partIndex) => {
+              const emoji = document.createElement("span");
+              emoji.className = "moment-emoji moment-part";
+              emoji.textContent = part;
+              emoji.style.setProperty("--part-delay", `${180 + partIndex * 180}ms`);
+              bubble.appendChild(emoji);
+            });
+          } else {
+            bubble.textContent = moment.icon;
+          }
+
+          if (moment.sticker) {
+            const sticker = document.createElement("img");
+            sticker.className = "moment-sticker";
+            sticker.src = moment.sticker;
+            sticker.alt = "";
+            sticker.draggable = false;
+            sticker.style.setProperty("--part-delay", `${180 + (moment.parts?.length || 0) * 180}ms`);
+
+            if (moment.wakeable) {
+              sticker.classList.add("is-wakeable");
+              sticker.tabIndex = 0;
+              sticker.setAttribute("role", "button");
+              sticker.setAttribute("aria-label", "잠든 메타몽 깨우기");
+              sticker.addEventListener("click", (event) => {
+                event.stopPropagation();
+                wakeSleepySticker(sticker);
+              });
+              sticker.addEventListener("keydown", (event) => {
+                if (event.key !== "Enter" && event.key !== " ") return;
+                event.preventDefault();
+                wakeSleepySticker(sticker);
+              });
+            }
+
+            bubble.appendChild(sticker);
+          }
+
           momentFlow.appendChild(bubble);
-        }, index * bubbleDelay + (moment.final ? finalBubbleExtraDelay : 0));
+        }, loadingDelay + index * bubbleDelay + (moment.final ? finalBubbleExtraDelay : 0));
       });
 
       setTimeout(() => {
         fakeInput.classList.add("is-hidden");
         chatQuestion.classList.add("is-visible");
-        document.querySelector(".chat-screen").classList.add("question-shown");
-      }, moments.length * bubbleDelay + finalBubbleExtraDelay + 760);
+        chatScreen.classList.add("question-shown");
+      }, loadingDelay + moments.length * bubbleDelay + finalBubbleExtraDelay + 760);
     }
 
     function showToast() {
@@ -2470,7 +2693,7 @@
       cameraPreview.srcObject = cameraStream;
       cameraPreview.classList.toggle("is-front", cameraFacingMode === "user");
       await cameraPreview.play();
-      cameraStatus.textContent = cameraFacingMode === "user" ? "전면 카메라로 남겨보세요." : "후면 카메라로 남겨보세요.";
+      cameraStatus.textContent = "";
       cameraCaptureButton.disabled = false;
       cameraSwitchButton.disabled = false;
     }
@@ -2490,7 +2713,7 @@
     async function switchMomentCamera() {
       const previousFacingMode = cameraFacingMode;
       const nextFacingMode = cameraFacingMode === "user" ? "environment" : "user";
-      cameraStatus.textContent = "카메라를 전환하고 있어요.";
+      cameraStatus.textContent = "";
 
       try {
         await startCamera(nextFacingMode);
@@ -2615,6 +2838,30 @@
           cameraCaptureButton.disabled = false;
         }
       }, "image/jpeg", 0.92);
+    }
+
+    function spawnWakePoof(target, host = mobileApp) {
+      const hostRect = host.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      const poof = document.createElement("span");
+      poof.className = "wake-poof";
+      poof.style.setProperty("--x", `${targetRect.left + targetRect.width / 2 - hostRect.left}px`);
+      poof.style.setProperty("--y", `${targetRect.top + targetRect.height / 2 - hostRect.top}px`);
+      host.appendChild(poof);
+      setTimeout(() => poof.remove(), 680);
+    }
+
+    function wakeSleepySticker(sticker) {
+      if (sticker.dataset.woke === "true") return;
+      sticker.dataset.woke = "true";
+      sticker.blur();
+      playDittoSound();
+      spawnWakePoof(sticker);
+      spawnCrawlingDitto(sticker, chatYesButton);
+      sticker.classList.add("is-waking");
+      sticker.removeAttribute("tabindex");
+      sticker.setAttribute("aria-hidden", "true");
+      setTimeout(() => sticker.remove(), 340);
     }
 
     function getEscapeVector(sourceButton, avoidButton) {
