@@ -47,6 +47,8 @@
       touch-action: manipulation;
       user-select: none;
       -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
     }
 
     .stage {
@@ -145,7 +147,14 @@
       animation: bob var(--speed) ease-in-out infinite;
       animation-delay: var(--delay);
       filter: drop-shadow(0 16px 18px rgba(91, 54, 124, 0.2));
+      user-select: none;
+      -webkit-user-select: none;
       -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+    }
+
+    .ditto:focus:not(:focus-visible) {
+      outline: none;
     }
 
     .ditto-img {
@@ -163,11 +172,6 @@
       outline: 4px solid rgba(239, 63, 107, 0.42);
       outline-offset: 8px;
       border-radius: 44%;
-    }
-
-    .ditto:hover .ditto-img {
-      transform: scale(1.08);
-      filter: saturate(1.12);
     }
 
     .real-pokemon {
@@ -194,9 +198,16 @@
       transition: transform 190ms ease, filter 190ms ease;
     }
 
-    .ditto:hover .ditto-body {
-      transform: scale(1.06);
-      filter: saturate(1.12);
+    @media (hover: hover) and (pointer: fine) {
+      .ditto:hover .ditto-img {
+        transform: scale(1.08);
+        filter: saturate(1.12);
+      }
+
+      .ditto:hover .ditto-body {
+        transform: scale(1.06);
+        filter: saturate(1.12);
+      }
     }
 
     .ditto-eye,
@@ -2174,8 +2185,15 @@
       return button;
     }
 
+    function clearStickerTouchState(target) {
+      const button = target.closest?.(".ditto, .progress-dot");
+      if (!button) return;
+      requestAnimationFrame(() => button.blur());
+    }
+
     function removeDitto(button) {
       if (button.classList.contains("is-popped")) return;
+      button.blur();
       playDittoSound();
       button.classList.add("is-popped");
       removed += 1;
@@ -2188,6 +2206,7 @@
 
     function removeProgressSticker() {
       if (!progressSticker || progressSticker.classList.contains("is-popped")) return;
+      progressSticker.blur();
       playDittoSound();
       progressSticker.classList.add("is-popped");
       removed += 1;
@@ -2197,6 +2216,7 @@
 
     function splashRealPokemon(button) {
       if (button.classList.contains("is-popped")) return;
+      button.blur();
       const splashes = Number(button.dataset.splashes || "0") + 1;
       button.dataset.splashes = `${splashes}`;
       const isFinalSplash = splashes >= 100;
@@ -2662,6 +2682,10 @@
     cameraSwitchButton.addEventListener("click", switchMomentCamera);
     cameraCaptureButton.addEventListener("click", captureMomentPhoto);
     progressSticker.addEventListener("click", removeProgressSticker);
+    progressSticker.addEventListener("pointerup", (event) => clearStickerTouchState(event.target));
+    progressSticker.addEventListener("pointercancel", (event) => clearStickerTouchState(event.target));
+    field.addEventListener("pointerup", (event) => clearStickerTouchState(event.target));
+    field.addEventListener("pointercancel", (event) => clearStickerTouchState(event.target));
     document.addEventListener("dblclick", (event) => event.preventDefault(), { passive: false });
 
     dittos.map(createDitto).forEach((ditto) => field.appendChild(ditto));
